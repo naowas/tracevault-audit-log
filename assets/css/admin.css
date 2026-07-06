@@ -15,10 +15,18 @@
 	margin-bottom: 4px;
 }
 
+.oal-page-heading {
+	align-items: flex-start;
+	display: flex;
+	justify-content: space-between;
+	margin: 18px 0 20px;
+}
+
 .oal-subtitle {
 	color: #475569;
 	font-size: 14px;
 	margin-top: 4px;
+	max-width: 760px;
 }
 
 .oal-cards {
@@ -81,11 +89,123 @@
 	margin: 0;
 }
 
+.oal-panel-header p {
+	color: #64748b;
+	margin: 6px 0 0;
+}
+
 .oal-actions {
 	align-items: center;
 	display: flex;
 	flex-wrap: wrap;
 	gap: 8px;
+}
+
+.oal-notice {
+	margin: 0 0 16px;
+}
+
+.oal-settings-form {
+	margin-top: 18px;
+	max-width: 980px;
+}
+
+.oal-settings-panel {
+	margin-bottom: 18px;
+}
+
+.oal-settings-list {
+	padding: 0;
+}
+
+.oal-setting-row {
+	align-items: center;
+	display: grid;
+	gap: 24px;
+	grid-template-columns: minmax(240px, 1fr) minmax(240px, 340px);
+	padding: 20px 22px;
+}
+
+.oal-setting-row + .oal-setting-row {
+	border-top: 1px solid var(--oal-gray);
+}
+
+.oal-setting-row-danger {
+	background: #fff7f7;
+}
+
+.oal-setting-copy label {
+	display: block;
+	font-size: 14px;
+	font-weight: 650;
+	margin: 0 0 5px;
+}
+
+.oal-setting-copy p {
+	color: #64748b;
+	line-height: 1.45;
+	margin: 0;
+	max-width: 560px;
+}
+
+.oal-setting-control {
+	justify-self: stretch;
+}
+
+.oal-setting-control input[type="number"],
+.oal-setting-control select {
+	max-width: 100%;
+	min-height: 36px;
+	width: 100%;
+}
+
+.oal-inline-control {
+	align-items: center;
+	display: flex;
+	gap: 10px;
+}
+
+.oal-inline-control input[type="number"] {
+	max-width: 120px;
+}
+
+.oal-inline-control span {
+	color: #64748b;
+}
+
+.oal-switch {
+	align-items: center;
+	background: #f8fafc;
+	border: 1px solid #dcdcde;
+	border-radius: 8px;
+	display: flex;
+	gap: 10px;
+	min-height: 38px;
+	padding: 8px 10px;
+	width: fit-content;
+}
+
+.oal-switch input {
+	margin: 0;
+}
+
+.oal-switch span {
+	font-weight: 600;
+}
+
+.oal-settings-footer {
+	align-items: center;
+	background: #fff;
+	border: 1px solid #dcdcde;
+	border-radius: 8px;
+	box-shadow: 0 8px 22px rgba(15, 23, 42, 0.05);
+	display: flex;
+	justify-content: flex-end;
+	margin: 18px 0 0;
+	padding: 14px 18px;
+	position: sticky;
+	bottom: 12px;
+	z-index: 2;
 }
 
 .oal-filters,
@@ -248,6 +368,27 @@
 		align-items: flex-start;
 		flex-direction: column;
 	}
+
+	.oal-setting-row {
+		grid-template-columns: 1fr;
+	}
+
+	.oal-page-heading {
+		display: block;
+	}
+
+	.oal-setting-row {
+		gap: 12px;
+		padding: 18px;
+	}
+
+	.oal-settings-form {
+		max-width: none;
+	}
+
+	.oal-settings-footer {
+		position: static;
+	}
 }
 
 @media (prefers-color-scheme: dark) {
@@ -259,7 +400,8 @@
 	.oal-card,
 	.oal-panel,
 	.oal-filters,
-	.oal-export-form {
+	.oal-export-form,
+	.oal-settings-footer {
 		background: #1f2937;
 		border-color: #374151;
 	}
@@ -273,12 +415,28 @@
 	.oal-subtitle,
 	.oal-card-label,
 	.oal-log-table thead th,
-	.oal-object {
+	.oal-object,
+	.oal-setting-copy p,
+	.oal-panel-header p,
+	.oal-inline-control span {
 		color: #cbd5e1;
 	}
 
 	.oal-filters-simple {
 		background: #111827;
+	}
+
+	.oal-setting-row + .oal-setting-row {
+		border-color: #374151;
+	}
+
+	.oal-setting-row-danger {
+		background: #2a1f24;
+	}
+
+	.oal-switch {
+		background: #111827;
+		border-color: #374151;
 	}
 
 	.oal-log-table tbody tr:hover {
