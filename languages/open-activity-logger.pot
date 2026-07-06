@@ -1,0 +1,90 @@
+# Copyright (C) 2026 Naowas Morshed Eimon
+# This file is distributed under the GPLv2 or later.
+msgid ""
+msgstr ""
+"Project-Id-Version: Open Activity Logger 1.0.0\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/open-activity-logger\n"
+"POT-Creation-Date: 2026-07-06 00:00+0000\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Open Activity Logger\n"
+"X-Domain: open-activity-logger\n"
+
+msgid "Open Activity Logger"
+msgstr ""
+
+msgid "Track every action. Stay in control."
+msgstr ""
+
+msgid "Activity Logger"
+msgstr ""
+
+msgid "Settings"
+msgstr ""
+
+msgid "Permission denied."
+msgstr ""
+
+msgid "Log not found."
+msgstr ""
+
+msgid "Info"
+msgstr ""
+
+msgid "Notice"
+msgstr ""
+
+msgid "Warning"
+msgstr ""
+
+msgid "Critical"
+msgstr ""
+
+msgid "Activity Logs"
+msgstr ""
+
+msgid "Delete this log entry?"
+msgstr ""
+
+msgid "Delete all activity logs? This cannot be undone."
+msgstr ""
+
+msgid "Clear logs"
+msgstr ""
+
+msgid "Export CSV"
+msgstr ""
+
+msgid "Export JSON"
+msgstr ""
+
+msgid "Verbose mode: log option and settings changes"
+msgstr ""
+
+msgid "Keep this off unless you are debugging. It can create many system logs."
+msgstr ""
+
+msgid "Plugin deleted"
+msgstr ""
+
+msgid "Date display"
+msgstr ""
+
+msgid "Use WordPress date/time format"
+msgstr ""
+
+msgid "Relative time, such as 5 minutes ago"
+msgstr ""
+
+msgid "%s ago"
+msgstr ""
+
+msgid "Plugins & themes"
+msgstr ""
+
+msgid "Settings changes"
+msgstr ""
+
+msgid "Keep this off unless you are debugging. Cache, transient, and noisy builder options are still ignored."
+msgstr ""
