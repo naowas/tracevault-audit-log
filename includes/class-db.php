@@ -35,7 +35,7 @@ class DB {
 			return '';
 		}
 
-		return $wpdb->prefix . 'oal_' . $table;
+		return esc_sql( $wpdb->prefix . 'oal_' . $table );
 	}
 
 	/**
@@ -113,13 +113,15 @@ class DB {
 		$table    = $this->table( 'settings' );
 
 		foreach ( $defaults as $key => $value ) {
-			$exists = $wpdb->get_var( $wpdb->prepare( "SELECT id FROM {$table} WHERE setting_key = %s", $key ) );
+				// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter -- Custom table name is generated from a closed allow-list.
+				$exists = $wpdb->get_var( $wpdb->prepare( "SELECT id FROM {$table} WHERE setting_key = %s", $key ) );
 
 			if ( $exists ) {
 				continue;
 			}
 
-			$wpdb->insert(
+				// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery -- Inserting default values into plugin-owned settings table on activation.
+				$wpdb->insert(
 				$table,
 				array(
 					'setting_key'   => $key,
@@ -166,7 +168,8 @@ class DB {
 		}
 
 		$sql      = 'INSERT INTO ' . $table . ' (`' . implode( '`,`', $cols ) . '`) VALUES ' . implode( ',', $rows );
-		$inserted = $wpdb->query( $wpdb->prepare( $sql, $values ) );
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter -- Multi-row insert uses a generated placeholder list and a validated custom table name.
+			$inserted = $wpdb->query( $wpdb->prepare( $sql, $values ) );
 
 		if ( false === $inserted ) {
 			return 0;
@@ -203,8 +206,8 @@ class DB {
 
 			$rows[] = array(
 				'log_id'     => (int) $log_id,
-				'meta_key'   => sanitize_key( $key ),
-				'meta_value' => maybe_serialize( $value ),
+				'meta_key'   => sanitize_key( $key ), // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key -- Custom audit metadata table, not wp_postmeta.
+				'meta_value' => maybe_serialize( $value ), // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_value -- Custom audit metadata table, not wp_postmeta.
 			);
 		}
 	}
@@ -234,7 +237,8 @@ class DB {
 		}
 
 		$sql = 'INSERT INTO ' . $table . ' (`log_id`,`meta_key`,`meta_value`) VALUES ' . implode( ',', $sql_rows );
-		$wpdb->query( $wpdb->prepare( $sql, $values ) );
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter -- Multi-row insert uses a generated placeholder list and a validated custom table name.
+			$wpdb->query( $wpdb->prepare( $sql, $values ) );
 	}
 
 	/**
@@ -262,8 +266,8 @@ class DB {
 			'exclude_verbose' => 0,
 		);
 		$args     = wp_parse_args( $args, $defaults );
-		$where    = array( '1=1' );
-		$values   = array();
+		$where    = array( '1 = %d' );
+		$values   = array( 1 );
 
 		if ( '' !== $args['event_type'] ) {
 			$where[]  = 'event_type = %s';
@@ -340,10 +344,12 @@ class DB {
 		$where_sql = implode( ' AND ', $where );
 
 		$count_sql = "SELECT COUNT(*) FROM {$table} WHERE {$where_sql}";
-		$total     = $values ? (int) $wpdb->get_var( $wpdb->prepare( $count_sql, $values ) ) : (int) $wpdb->get_var( $count_sql );
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter -- Dynamic WHERE fragments are assembled only from fixed clauses with prepared values.
+		$total     = (int) $wpdb->get_var( $wpdb->prepare( $count_sql, $values ) );
 
 		$query_values = array_merge( $values, array( $per_page, $offset ) );
 		$sql          = "SELECT * FROM {$table} WHERE {$where_sql} ORDER BY created_at DESC, id DESC LIMIT %d OFFSET %d";
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter -- Dynamic WHERE fragments are assembled only from fixed clauses with prepared values.
 		$items        = $wpdb->get_results( $wpdb->prepare( $sql, $query_values ), ARRAY_A );
 
 		return array(
@@ -372,6 +378,7 @@ class DB {
 		}
 
 		$table = $this->table( 'logs' );
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.PreparedSQL.InterpolatedNotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter -- Custom table name is generated from a closed allow-list.
 		$row   = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM {$table} WHERE id = %d", $id ), ARRAY_A );
 
 		if ( ! $row ) {
@@ -399,7 +406,9 @@ class DB {
 			return false;
 		}
 
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery -- Deleting from plugin-owned custom table after nonce/capability checks.
 		$wpdb->delete( $this->table( 'meta' ), array( 'log_id' => $id ), array( '%d' ) );
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery -- Deleting from plugin-owned custom table after nonce/capability checks.
 		$deleted = $wpdb->delete( $this->table( 'logs' ), array( 'id' => $id ), array( '%d' ) );
 		wp_cache_delete( 'log_' . $id, 'open_activity_logger' );
 
@@ -421,9 +430,13 @@ class DB {
 		$meta = $this->table( 'meta' );
 		$logs = $this->table( 'logs' );
 
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter -- Custom table name is generated from a closed allow-list.
 		$wpdb->query( "DELETE FROM {$meta}" );
 
-		return $wpdb->query( "DELETE FROM {$logs}" );
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter -- Custom table name is generated from a closed allow-list.
+		$deleted = $wpdb->query( "DELETE FROM {$logs}" );
+
+		return $deleted;
 	}
 
 	/**
@@ -445,6 +458,7 @@ class DB {
 		$meta  = $this->table( 'meta' );
 		$cutoff = gmdate( 'Y-m-d H:i:s', time() - ( $days * DAY_IN_SECONDS ) );
 
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter -- Custom table name is generated from a closed allow-list.
 		$ids = $wpdb->get_col( $wpdb->prepare( "SELECT id FROM {$table} WHERE created_at < %s LIMIT 5000", $cutoff ) );
 
 		if ( empty( $ids ) ) {
@@ -453,8 +467,10 @@ class DB {
 
 		$ids = array_map( 'absint', $ids );
 		$in  = implode( ',', array_fill( 0, count( $ids ), '%d' ) );
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare, PluginCheck.Security.DirectDB.UnescapedDBParameter -- IN placeholders are generated from sanitized integer IDs.
 		$wpdb->query( $wpdb->prepare( "DELETE FROM {$meta} WHERE log_id IN ({$in})", $ids ) );
 
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare, PluginCheck.Security.DirectDB.UnescapedDBParameter -- IN placeholders are generated from sanitized integer IDs.
 		return (int) $wpdb->query( $wpdb->prepare( "DELETE FROM {$table} WHERE id IN ({$in})", $ids ) );
 	}
 
@@ -478,9 +494,13 @@ class DB {
 			$values[] = 'system.option_update';
 		}
 
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare, PluginCheck.Security.DirectDB.UnescapedDBParameter -- Custom table name is validated and WHERE contains only fixed prepared fragments.
 		$total = (int) $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(*) FROM {$table} WHERE {$where}", $values ) );
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare, PluginCheck.Security.DirectDB.UnescapedDBParameter -- Custom table name is validated and WHERE contains only fixed prepared fragments.
 		$events = $wpdb->get_results( $wpdb->prepare( "SELECT event_type, COUNT(*) AS total FROM {$table} WHERE {$where} GROUP BY event_type ORDER BY total DESC LIMIT 10", $values ), ARRAY_A );
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare, PluginCheck.Security.DirectDB.UnescapedDBParameter -- Custom table name is validated and WHERE contains only fixed prepared fragments.
 		$severity = $wpdb->get_results( $wpdb->prepare( "SELECT severity, COUNT(*) AS total FROM {$table} WHERE {$where} GROUP BY severity ORDER BY severity ASC", $values ), ARRAY_A );
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare, PluginCheck.Security.DirectDB.UnescapedDBParameter -- Custom table name is validated and WHERE contains only fixed prepared fragments.
 		$daily = $wpdb->get_results( $wpdb->prepare( "SELECT DATE(created_at) AS day, COUNT(*) AS total FROM {$table} WHERE {$where} GROUP BY DATE(created_at) ORDER BY day ASC", $values ), ARRAY_A );
 
 		return array(
@@ -503,6 +523,7 @@ class DB {
 
 		$table = $this->table( 'logs' );
 
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Updating plugin-owned custom table during privacy erasure.
 		return $wpdb->update(
 			$table,
 			array(
@@ -515,20 +536,6 @@ class DB {
 			array( '%s', '%s', '%s', '%s' ),
 			array( '%d' )
 		);
-	}
-
-	/**
-	 * Drops all plugin tables.
-	 *
-	 * @return void
-	 */
-	public function drop_tables() {
-		global $wpdb;
-
-		foreach ( array( 'meta', 'logs', 'settings' ) as $table ) {
-			$name = $this->table( $table );
-			$wpdb->query( "DROP TABLE IF EXISTS {$name}" );
-		}
 	}
 
 	/**

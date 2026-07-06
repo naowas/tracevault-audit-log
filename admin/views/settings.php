@@ -13,7 +13,7 @@ $settings = isset( $data['settings'] ) ? $data['settings'] : array();
 ?>
 <div class="wrap oal-wrap">
 	<h1><?php esc_html_e( 'Settings', 'open-activity-logger' ); ?></h1>
-	<?php if ( isset( $_GET['updated'] ) ) : ?>
+	<?php if ( ! empty( $data['updated'] ) ) : ?>
 		<div class="notice notice-success is-dismissible"><p><?php esc_html_e( 'Settings saved.', 'open-activity-logger' ); ?></p></div>
 	<?php endif; ?>
 	<section class="oal-panel">

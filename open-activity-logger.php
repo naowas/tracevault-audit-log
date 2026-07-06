@@ -60,8 +60,6 @@ register_deactivation_hook( __FILE__, array( 'OpenActivityLogger\\Deactivator', 
 add_action(
 	'plugins_loaded',
 	static function () {
-		load_plugin_textdomain( 'open-activity-logger', false, dirname( OAL_PLUGIN_BASENAME ) . '/languages' );
-
 		if ( version_compare( PHP_VERSION, OAL_MINIMUM_PHP_VERSION, '<' ) || version_compare( get_bloginfo( 'version' ), OAL_MINIMUM_WP_VERSION, '<' ) ) {
 			add_action(
 				'admin_notices',

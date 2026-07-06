@@ -90,9 +90,10 @@ class Events {
 	public function login( $user_login, $user ) {
 		$this->logger->log(
 			'user.login',
-			array(
-				'user'      => $user,
-				'message'   => sprintf( __( 'User "%s" logged in.', 'open-activity-logger' ), $user_login ),
+				array(
+					'user'      => $user,
+					/* translators: %s: user login. */
+					'message'   => sprintf( __( 'User "%s" logged in.', 'open-activity-logger' ), $user_login ),
 				'severity'  => Logger::SEVERITY_INFO,
 				'object_type' => 'user',
 				'object_id' => $user->ID,
@@ -127,11 +128,12 @@ class Events {
 	public function login_failed( $username ) {
 		$this->logger->log(
 			'user.login_failed',
-			array(
-				'username' => sanitize_user( $username ),
-				'severity' => Logger::SEVERITY_WARNING,
-				'object_type' => 'user',
-				'message'  => sprintf( __( 'Failed login attempt for "%s".', 'open-activity-logger' ), sanitize_user( $username ) ),
+				array(
+					'username' => sanitize_user( $username ),
+					'severity' => Logger::SEVERITY_WARNING,
+					'object_type' => 'user',
+					/* translators: %s: attempted username. */
+					'message'  => sprintf( __( 'Failed login attempt for "%s".', 'open-activity-logger' ), sanitize_user( $username ) ),
 			)
 		);
 	}
@@ -148,10 +150,11 @@ class Events {
 		unset( $userdata['user_pass'] );
 		$this->logger->log(
 			'user.profile_update',
-			array(
-				'object_type' => 'user',
-				'object_id'   => $user_id,
-				'message'     => sprintf( __( 'Profile updated for user ID %d.', 'open-activity-logger' ), $user_id ),
+				array(
+					'object_type' => 'user',
+					'object_id'   => $user_id,
+					/* translators: %d: user ID. */
+					'message'     => sprintf( __( 'Profile updated for user ID %d.', 'open-activity-logger' ), $user_id ),
 				'meta'        => array(
 					'user_login' => $old_user_data instanceof \WP_User ? $old_user_data->user_login : '',
 				),
@@ -173,10 +176,11 @@ class Events {
 			array(
 				'user_id'     => $user->ID,
 				'username'    => $user->user_login,
-				'object_type' => 'user',
-				'object_id'   => $user->ID,
-				'severity'    => Logger::SEVERITY_NOTICE,
-				'message'     => sprintf( __( 'Password changed for "%s".', 'open-activity-logger' ), $user->user_login ),
+					'object_type' => 'user',
+					'object_id'   => $user->ID,
+					'severity'    => Logger::SEVERITY_NOTICE,
+					/* translators: %s: user login. */
+					'message'     => sprintf( __( 'Password changed for "%s".', 'open-activity-logger' ), $user->user_login ),
 			)
 		);
 	}
@@ -193,10 +197,11 @@ class Events {
 		$this->logger->log(
 			'user.role_change',
 			array(
-				'object_type' => 'user',
-				'object_id'   => $user_id,
-				'severity'    => Logger::SEVERITY_NOTICE,
-				'message'     => sprintf( __( 'Role changed for user ID %1$d to %2$s.', 'open-activity-logger' ), $user_id, $role ),
+					'object_type' => 'user',
+					'object_id'   => $user_id,
+					'severity'    => Logger::SEVERITY_NOTICE,
+					/* translators: 1: user ID, 2: new role. */
+					'message'     => sprintf( __( 'Role changed for user ID %1$d to %2$s.', 'open-activity-logger' ), $user_id, $role ),
 				'meta'        => array(
 					'old_roles' => implode( ',', array_map( 'sanitize_key', (array) $old_roles ) ),
 					'new_role'  => sanitize_key( $role ),
@@ -216,11 +221,12 @@ class Events {
 		$this->logger->log(
 			'user.create',
 			array(
-				'user_id'     => $user_id,
-				'username'    => $user ? $user->user_login : '',
-				'object_type' => 'user',
-				'object_id'   => $user_id,
-				'message'     => sprintf( __( 'User ID %d was created.', 'open-activity-logger' ), $user_id ),
+					'user_id'     => $user_id,
+					'username'    => $user ? $user->user_login : '',
+					'object_type' => 'user',
+					'object_id'   => $user_id,
+					/* translators: %d: user ID. */
+					'message'     => sprintf( __( 'User ID %d was created.', 'open-activity-logger' ), $user_id ),
 			)
 		);
 	}
@@ -235,10 +241,11 @@ class Events {
 		$this->logger->log(
 			'user.delete',
 			array(
-				'object_type' => 'user',
-				'object_id'   => $user_id,
-				'severity'    => Logger::SEVERITY_WARNING,
-				'message'     => sprintf( __( 'User ID %d was deleted.', 'open-activity-logger' ), $user_id ),
+					'object_type' => 'user',
+					'object_id'   => $user_id,
+					'severity'    => Logger::SEVERITY_WARNING,
+					/* translators: %d: user ID. */
+					'message'     => sprintf( __( 'User ID %d was deleted.', 'open-activity-logger' ), $user_id ),
 			)
 		);
 	}
@@ -263,9 +270,10 @@ class Events {
 		$this->logger->log(
 			$update ? 'content.update' : 'content.create',
 			array(
-				'object_type' => $post->post_type,
-				'object_id'   => $post_id,
-				'message'     => sprintf( __( '%1$s "%2$s" was %3$s.', 'open-activity-logger' ), ucfirst( $post->post_type ), $post->post_title, $update ? __( 'updated', 'open-activity-logger' ) : __( 'created', 'open-activity-logger' ) ),
+					'object_type' => $post->post_type,
+					'object_id'   => $post_id,
+					/* translators: 1: post type, 2: post title, 3: action label. */
+					'message'     => sprintf( __( '%1$s "%2$s" was %3$s.', 'open-activity-logger' ), ucfirst( $post->post_type ), $post->post_title, $update ? __( 'updated', 'open-activity-logger' ) : __( 'created', 'open-activity-logger' ) ),
 				'meta'        => array(
 					'post_status' => $post->post_status,
 				),
@@ -289,10 +297,11 @@ class Events {
 		$this->logger->log(
 			'content.delete',
 			array(
-				'object_type' => $post->post_type,
-				'object_id'   => $post_id,
-				'severity'    => Logger::SEVERITY_WARNING,
-				'message'     => sprintf( __( '%1$s "%2$s" was deleted.', 'open-activity-logger' ), ucfirst( $post->post_type ), $post->post_title ),
+					'object_type' => $post->post_type,
+					'object_id'   => $post_id,
+					'severity'    => Logger::SEVERITY_WARNING,
+					/* translators: 1: post type, 2: post title. */
+					'message'     => sprintf( __( '%1$s "%2$s" was deleted.', 'open-activity-logger' ), ucfirst( $post->post_type ), $post->post_title ),
 			)
 		);
 	}
@@ -313,10 +322,11 @@ class Events {
 		$this->logger->log(
 			'content.delete',
 			array(
-				'object_type' => $post->post_type,
-				'object_id'   => $post_id,
-				'severity'    => Logger::SEVERITY_WARNING,
-				'message'     => sprintf( __( '%1$s "%2$s" was moved to trash.', 'open-activity-logger' ), ucfirst( $post->post_type ), $post->post_title ),
+					'object_type' => $post->post_type,
+					'object_id'   => $post_id,
+					'severity'    => Logger::SEVERITY_WARNING,
+					/* translators: 1: post type, 2: post title. */
+					'message'     => sprintf( __( '%1$s "%2$s" was moved to trash.', 'open-activity-logger' ), ucfirst( $post->post_type ), $post->post_title ),
 			)
 		);
 	}
@@ -330,10 +340,11 @@ class Events {
 	public function media_uploaded( $attachment_id ) {
 		$this->logger->log(
 			'media.upload',
-			array(
-				'object_type' => 'attachment',
-				'object_id'   => $attachment_id,
-				'message'     => sprintf( __( 'Media attachment ID %d was uploaded.', 'open-activity-logger' ), $attachment_id ),
+				array(
+					'object_type' => 'attachment',
+					'object_id'   => $attachment_id,
+					/* translators: %d: attachment ID. */
+					'message'     => sprintf( __( 'Media attachment ID %d was uploaded.', 'open-activity-logger' ), $attachment_id ),
 			)
 		);
 	}
@@ -348,10 +359,11 @@ class Events {
 		$this->logger->log(
 			'media.delete',
 			array(
-				'object_type' => 'attachment',
-				'object_id'   => $attachment_id,
-				'severity'    => Logger::SEVERITY_WARNING,
-				'message'     => sprintf( __( 'Media attachment ID %d was deleted.', 'open-activity-logger' ), $attachment_id ),
+					'object_type' => 'attachment',
+					'object_id'   => $attachment_id,
+					'severity'    => Logger::SEVERITY_WARNING,
+					/* translators: %d: attachment ID. */
+					'message'     => sprintf( __( 'Media attachment ID %d was deleted.', 'open-activity-logger' ), $attachment_id ),
 			)
 		);
 	}
@@ -366,10 +378,11 @@ class Events {
 	public function comment_created( $comment_id, $comment ) {
 		$this->logger->log(
 			'comment.create',
-			array(
-				'object_type' => 'comment',
-				'object_id'   => $comment_id,
-				'message'     => sprintf( __( 'Comment ID %d was created.', 'open-activity-logger' ), $comment_id ),
+				array(
+					'object_type' => 'comment',
+					'object_id'   => $comment_id,
+					/* translators: %d: comment ID. */
+					'message'     => sprintf( __( 'Comment ID %d was created.', 'open-activity-logger' ), $comment_id ),
 				'meta'        => array(
 					'post_id' => $comment instanceof \WP_Comment ? $comment->comment_post_ID : 0,
 				),
@@ -392,10 +405,11 @@ class Events {
 
 		$this->logger->log(
 			'comment.status_change',
-			array(
-				'object_type' => 'comment',
-				'object_id'   => $comment->comment_ID,
-				'message'     => sprintf( __( 'Comment ID %1$d changed from %2$s to %3$s.', 'open-activity-logger' ), $comment->comment_ID, $old_status, $new_status ),
+				array(
+					'object_type' => 'comment',
+					'object_id'   => $comment->comment_ID,
+					/* translators: 1: comment ID, 2: old comment status, 3: new comment status. */
+					'message'     => sprintf( __( 'Comment ID %1$d changed from %2$s to %3$s.', 'open-activity-logger' ), $comment->comment_ID, $old_status, $new_status ),
 			)
 		);
 	}
@@ -410,10 +424,11 @@ class Events {
 		$this->logger->log(
 			'comment.delete',
 			array(
-				'object_type' => 'comment',
-				'object_id'   => $comment_id,
-				'severity'    => Logger::SEVERITY_WARNING,
-				'message'     => sprintf( __( 'Comment ID %d was deleted.', 'open-activity-logger' ), $comment_id ),
+					'object_type' => 'comment',
+					'object_id'   => $comment_id,
+					'severity'    => Logger::SEVERITY_WARNING,
+					/* translators: %d: comment ID. */
+					'message'     => sprintf( __( 'Comment ID %d was deleted.', 'open-activity-logger' ), $comment_id ),
 			)
 		);
 	}
@@ -428,9 +443,10 @@ class Events {
 	public function plugin_activated( $plugin, $network_wide ) {
 		$this->logger->log(
 			'system.plugin_activate',
-			array(
-				'object_type' => 'plugin',
-				'message'     => sprintf( __( 'Plugin "%s" was activated.', 'open-activity-logger' ), $plugin ),
+				array(
+					'object_type' => 'plugin',
+					/* translators: %s: plugin basename. */
+					'message'     => sprintf( __( 'Plugin "%s" was activated.', 'open-activity-logger' ), $plugin ),
 				'meta'        => array( 'network_wide' => (bool) $network_wide ),
 			)
 		);
@@ -447,9 +463,10 @@ class Events {
 		$this->logger->log(
 			'system.plugin_deactivate',
 			array(
-				'object_type' => 'plugin',
-				'severity'    => Logger::SEVERITY_NOTICE,
-				'message'     => sprintf( __( 'Plugin "%s" was deactivated.', 'open-activity-logger' ), $plugin ),
+					'object_type' => 'plugin',
+					'severity'    => Logger::SEVERITY_NOTICE,
+					/* translators: %s: plugin basename. */
+					'message'     => sprintf( __( 'Plugin "%s" was deactivated.', 'open-activity-logger' ), $plugin ),
 				'meta'        => array( 'network_wide' => (bool) $network_wide ),
 			)
 		);
@@ -470,9 +487,10 @@ class Events {
 		$this->logger->log(
 			'system.plugin_delete',
 			array(
-				'object_type' => 'plugin',
-				'severity'    => Logger::SEVERITY_WARNING,
-				'message'     => sprintf( __( 'Plugin "%s" was deleted.', 'open-activity-logger' ), $plugin ),
+					'object_type' => 'plugin',
+					'severity'    => Logger::SEVERITY_WARNING,
+					/* translators: %s: plugin basename. */
+					'message'     => sprintf( __( 'Plugin "%s" was deleted.', 'open-activity-logger' ), $plugin ),
 			)
 		);
 	}
@@ -497,9 +515,10 @@ class Events {
 		$this->logger->log(
 			'system.' . $type . '_' . $action,
 			array(
-				'object_type' => $type,
-				'severity'    => Logger::SEVERITY_NOTICE,
-				'message'     => sprintf( __( '%1$s %2$s completed.', 'open-activity-logger' ), ucfirst( $type ), $action ),
+					'object_type' => $type,
+					'severity'    => Logger::SEVERITY_NOTICE,
+					/* translators: 1: object type, 2: action. */
+					'message'     => sprintf( __( '%1$s %2$s completed.', 'open-activity-logger' ), ucfirst( $type ), $action ),
 				'meta'        => array(
 					'bulk' => ! empty( $hook_extra['bulk'] ),
 				),
@@ -519,9 +538,10 @@ class Events {
 		$this->logger->log(
 			'system.theme_switch',
 			array(
-				'object_type' => 'theme',
-				'severity'    => Logger::SEVERITY_NOTICE,
-				'message'     => sprintf( __( 'Theme switched to "%s".', 'open-activity-logger' ), $new_name ),
+					'object_type' => 'theme',
+					'severity'    => Logger::SEVERITY_NOTICE,
+					/* translators: %s: theme name. */
+					'message'     => sprintf( __( 'Theme switched to "%s".', 'open-activity-logger' ), $new_name ),
 				'meta'        => array(
 					'old_theme' => $old_theme instanceof \WP_Theme ? $old_theme->get( 'Name' ) : '',
 					'new_theme' => $new_theme instanceof \WP_Theme ? $new_theme->get( 'Name' ) : $new_name,
@@ -552,9 +572,10 @@ class Events {
 		$this->logger->log(
 			'system.option_update',
 			array(
-				'object_type' => 'option',
-				'severity'    => Logger::SEVERITY_NOTICE,
-				'message'     => sprintf( __( 'Option "%s" was updated.', 'open-activity-logger' ), $option ),
+					'object_type' => 'option',
+					'severity'    => Logger::SEVERITY_NOTICE,
+					/* translators: %s: option name. */
+					'message'     => sprintf( __( 'Option "%s" was updated.', 'open-activity-logger' ), $option ),
 				'meta'        => array( 'option' => sanitize_key( $option ) ),
 			)
 		);
@@ -606,7 +627,15 @@ class Events {
 	 * @return void
 	 */
 	public function woocommerce_order_created( $order_id ) {
-		$this->logger->log( 'woocommerce.order_create', array( 'object_type' => 'shop_order', 'object_id' => $order_id, 'message' => sprintf( __( 'WooCommerce order ID %d was created.', 'open-activity-logger' ), $order_id ) ) );
+		$this->logger->log(
+			'woocommerce.order_create',
+			array(
+				'object_type' => 'shop_order',
+				'object_id'   => $order_id,
+				/* translators: %d: WooCommerce order ID. */
+				'message'     => sprintf( __( 'WooCommerce order ID %d was created.', 'open-activity-logger' ), $order_id ),
+			)
+		);
 	}
 
 	/**
@@ -616,7 +645,15 @@ class Events {
 	 * @return void
 	 */
 	public function woocommerce_order_updated( $order_id ) {
-		$this->logger->log( 'woocommerce.order_update', array( 'object_type' => 'shop_order', 'object_id' => $order_id, 'message' => sprintf( __( 'WooCommerce order ID %d was updated.', 'open-activity-logger' ), $order_id ) ) );
+		$this->logger->log(
+			'woocommerce.order_update',
+			array(
+				'object_type' => 'shop_order',
+				'object_id'   => $order_id,
+				/* translators: %d: WooCommerce order ID. */
+				'message'     => sprintf( __( 'WooCommerce order ID %d was updated.', 'open-activity-logger' ), $order_id ),
+			)
+		);
 	}
 
 	/**
@@ -636,6 +673,7 @@ class Events {
 				'object_type' => 'shop_order',
 				'object_id'   => $order_id,
 				'severity'    => Logger::SEVERITY_NOTICE,
+				/* translators: 1: WooCommerce order ID, 2: old order status, 3: new order status. */
 				'message'     => sprintf( __( 'WooCommerce order ID %1$d changed from %2$s to %3$s.', 'open-activity-logger' ), $order_id, $old_status, $new_status ),
 			)
 		);
@@ -654,7 +692,15 @@ class Events {
 			return;
 		}
 
-		$this->logger->log( $update ? 'woocommerce.product_update' : 'woocommerce.product_create', array( 'object_type' => 'product', 'object_id' => $post_id, 'message' => sprintf( __( 'WooCommerce product "%s" was saved.', 'open-activity-logger' ), $post->post_title ) ) );
+		$this->logger->log(
+			$update ? 'woocommerce.product_update' : 'woocommerce.product_create',
+			array(
+				'object_type' => 'product',
+				'object_id'   => $post_id,
+				/* translators: %s: WooCommerce product title. */
+				'message'     => sprintf( __( 'WooCommerce product "%s" was saved.', 'open-activity-logger' ), $post->post_title ),
+			)
+		);
 	}
 
 	/**
@@ -670,6 +716,14 @@ class Events {
 			return;
 		}
 
-		$this->logger->log( $update ? 'woocommerce.coupon_update' : 'woocommerce.coupon_create', array( 'object_type' => 'shop_coupon', 'object_id' => $post_id, 'message' => sprintf( __( 'WooCommerce coupon "%s" was saved.', 'open-activity-logger' ), $post->post_title ) ) );
+		$this->logger->log(
+			$update ? 'woocommerce.coupon_update' : 'woocommerce.coupon_create',
+			array(
+				'object_type' => 'shop_coupon',
+				'object_id'   => $post_id,
+				/* translators: %s: WooCommerce coupon title. */
+				'message'     => sprintf( __( 'WooCommerce coupon "%s" was saved.', 'open-activity-logger' ), $post->post_title ),
+			)
+		);
 	}
 }

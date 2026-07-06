@@ -159,7 +159,13 @@ class Admin {
 	 * @return void
 	 */
 	public function settings_page() {
-		$this->render( 'settings', array( 'settings' => $this->settings->all() ) );
+		$this->render(
+			'settings',
+			array(
+				'settings' => $this->settings->all(),
+				'updated'  => (bool) filter_input( INPUT_GET, 'updated', FILTER_VALIDATE_BOOLEAN ),
+			)
+		);
 	}
 
 	/**

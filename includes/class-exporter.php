@@ -107,10 +107,8 @@ class Exporter {
 	 * @return string
 	 */
 	private function to_csv( array $items ) {
-		$handle = fopen( 'php://temp', 'r+' );
 		$fields = array( 'id', 'event_type', 'severity', 'user_id', 'username', 'user_role', 'ip_address', 'object_type', 'object_id', 'message', 'created_at', 'meta' );
-
-		fputcsv( $handle, $fields );
+		$lines  = array( $this->csv_row( $fields ) );
 
 		foreach ( $items as $item ) {
 			$row = array();
@@ -119,13 +117,26 @@ class Exporter {
 				$row[] = 'meta' === $field ? wp_json_encode( $item['meta'] ) : ( isset( $item[ $field ] ) ? $item[ $field ] : '' );
 			}
 
-			fputcsv( $handle, $row );
+			$lines[] = $this->csv_row( $row );
 		}
 
-		rewind( $handle );
-		$csv = stream_get_contents( $handle );
-		fclose( $handle );
+		return implode( "\r\n", $lines ) . "\r\n";
+	}
 
-		return (string) $csv;
+	/**
+	 * Converts a row to RFC 4180-compatible CSV without filesystem streams.
+	 *
+	 * @param array $row Row values.
+	 * @return string
+	 */
+	private function csv_row( array $row ) {
+		$escaped = array();
+
+		foreach ( $row as $value ) {
+			$value     = str_replace( '"', '""', (string) $value );
+			$escaped[] = '"' . $value . '"';
+		}
+
+		return implode( ',', $escaped );
 	}
 }

@@ -72,6 +72,7 @@ class Settings {
 		}
 
 		$table = $this->db->table( 'settings' );
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.PreparedSQL.InterpolatedNotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter -- Custom table name is generated from a closed allow-list.
 		$value = $wpdb->get_var( $wpdb->prepare( "SELECT setting_value FROM {$table} WHERE setting_key = %s", $key ) );
 
 		if ( null === $value ) {
@@ -109,6 +110,7 @@ class Settings {
 
 		$stored = is_scalar( $value ) ? (string) $value : wp_json_encode( $value );
 		$table  = $this->db->table( 'settings' );
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery -- Writing plugin-owned custom settings table.
 		$result = $wpdb->replace(
 			$table,
 			array(

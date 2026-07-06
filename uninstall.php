@@ -17,7 +17,8 @@ if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
 function oal_uninstall_blog() {
 	global $wpdb;
 
-	$settings_table = $wpdb->prefix . 'oal_settings';
+	$settings_table = esc_sql( $wpdb->prefix . 'oal_settings' );
+	// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter -- Reads plugin-owned custom table to honor uninstall preference.
 	$delete = $wpdb->get_var( $wpdb->prepare( "SELECT setting_value FROM {$settings_table} WHERE setting_key = %s", 'delete_data_on_uninstall' ) );
 
 	if ( '1' !== (string) $delete ) {
@@ -25,7 +26,8 @@ function oal_uninstall_blog() {
 	}
 
 	foreach ( array( 'oal_meta', 'oal_logs', 'oal_settings' ) as $suffix ) {
-		$table = $wpdb->prefix . $suffix;
+		$table = esc_sql( $wpdb->prefix . $suffix );
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.DirectDatabaseQuery.SchemaChange, PluginCheck.Security.DirectDB.UnescapedDBParameter -- Uninstall cleanup for plugin-owned custom tables.
 		$wpdb->query( "DROP TABLE IF EXISTS {$table}" );
 	}
 }
