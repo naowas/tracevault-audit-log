@@ -1,55 +1,55 @@
-.oal-wrap {
-	--oal-primary: #1E3A8A;
-	--oal-navy: #0F172A;
-	--oal-teal: #14B8A6;
-	--oal-gray: #E5E7EB;
-	--oal-soft: #F8FAFC;
-	--oal-warning: #F59E0B;
-	--oal-danger: #EF4444;
-	color: var(--oal-navy);
+.tracevault-wrap {
+	--tracevault-primary: #1E3A8A;
+	--tracevault-navy: #0F172A;
+	--tracevault-teal: #14B8A6;
+	--tracevault-gray: #E5E7EB;
+	--tracevault-soft: #F8FAFC;
+	--tracevault-warning: #F59E0B;
+	--tracevault-danger: #EF4444;
+	color: var(--tracevault-navy);
 }
 
-.oal-wrap h1 {
+.tracevault-wrap h1 {
 	font-size: 26px;
 	font-weight: 650;
 	margin-bottom: 4px;
 }
 
-.oal-page-heading {
+.tracevault-page-heading {
 	align-items: flex-start;
 	display: flex;
 	justify-content: space-between;
 	margin: 18px 0 20px;
 }
 
-.oal-subtitle {
+.tracevault-subtitle {
 	color: #475569;
 	font-size: 14px;
 	margin-top: 4px;
 	max-width: 760px;
 }
 
-.oal-cards {
+.tracevault-cards {
 	display: grid;
 	gap: 16px;
 	grid-template-columns: repeat(3, minmax(0, 1fr));
 	margin: 20px 0;
 }
 
-.oal-card,
-.oal-panel {
+.tracevault-card,
+.tracevault-panel {
 	background: #fff;
 	border: 1px solid #dcdcde;
 	border-radius: 8px;
 	box-shadow: 0 8px 22px rgba(15, 23, 42, 0.05);
 }
 
-.oal-card {
-	border-top: 3px solid var(--oal-primary);
+.tracevault-card {
+	border-top: 3px solid var(--tracevault-primary);
 	padding: 18px;
 }
 
-.oal-card-label {
+.tracevault-card-label {
 	color: #64748b;
 	display: block;
 	font-size: 12px;
@@ -58,26 +58,26 @@
 	margin-bottom: 8px;
 }
 
-.oal-card strong {
+.tracevault-card strong {
 	display: block;
 	font-size: 24px;
 	font-weight: 600;
 }
 
-.oal-panel {
+.tracevault-panel {
 	margin: 20px 0;
 	overflow: hidden;
 	padding: 0;
 }
 
-.oal-panel h2 {
+.tracevault-panel h2 {
 	margin-top: 0;
 }
 
-.oal-panel-header {
+.tracevault-panel-header {
 	align-items: center;
 	background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
-	border-bottom: 1px solid var(--oal-gray);
+	border-bottom: 1px solid var(--tracevault-gray);
 	display: flex;
 	justify-content: space-between;
 	gap: 12px;
@@ -85,40 +85,40 @@
 	padding: 18px;
 }
 
-.oal-panel-header h2 {
+.tracevault-panel-header h2 {
 	margin: 0;
 }
 
-.oal-panel-header p {
+.tracevault-panel-header p {
 	color: #64748b;
 	margin: 6px 0 0;
 }
 
-.oal-actions {
+.tracevault-actions {
 	align-items: center;
 	display: flex;
 	flex-wrap: wrap;
 	gap: 8px;
 }
 
-.oal-notice {
+.tracevault-notice {
 	margin: 0 0 16px;
 }
 
-.oal-settings-form {
+.tracevault-settings-form {
 	margin-top: 18px;
 	max-width: 980px;
 }
 
-.oal-settings-panel {
+.tracevault-settings-panel {
 	margin-bottom: 18px;
 }
 
-.oal-settings-list {
+.tracevault-settings-list {
 	padding: 0;
 }
 
-.oal-setting-row {
+.tracevault-setting-row {
 	align-items: center;
 	display: grid;
 	gap: 24px;
@@ -126,54 +126,54 @@
 	padding: 20px 22px;
 }
 
-.oal-setting-row + .oal-setting-row {
-	border-top: 1px solid var(--oal-gray);
+.tracevault-setting-row + .tracevault-setting-row {
+	border-top: 1px solid var(--tracevault-gray);
 }
 
-.oal-setting-row-danger {
+.tracevault-setting-row-danger {
 	background: #fff7f7;
 }
 
-.oal-setting-copy label {
+.tracevault-setting-copy label {
 	display: block;
 	font-size: 14px;
 	font-weight: 650;
 	margin: 0 0 5px;
 }
 
-.oal-setting-copy p {
+.tracevault-setting-copy p {
 	color: #64748b;
 	line-height: 1.45;
 	margin: 0;
 	max-width: 560px;
 }
 
-.oal-setting-control {
+.tracevault-setting-control {
 	justify-self: stretch;
 }
 
-.oal-setting-control input[type="number"],
-.oal-setting-control select {
+.tracevault-setting-control input[type="number"],
+.tracevault-setting-control select {
 	max-width: 100%;
 	min-height: 36px;
 	width: 100%;
 }
 
-.oal-inline-control {
+.tracevault-inline-control {
 	align-items: center;
 	display: flex;
 	gap: 10px;
 }
 
-.oal-inline-control input[type="number"] {
+.tracevault-inline-control input[type="number"] {
 	max-width: 120px;
 }
 
-.oal-inline-control span {
+.tracevault-inline-control span {
 	color: #64748b;
 }
 
-.oal-switch {
+.tracevault-switch {
 	align-items: center;
 	background: #f8fafc;
 	border: 1px solid #dcdcde;
@@ -185,15 +185,15 @@
 	width: fit-content;
 }
 
-.oal-switch input {
+.tracevault-switch input {
 	margin: 0;
 }
 
-.oal-switch span {
+.tracevault-switch span {
 	font-weight: 600;
 }
 
-.oal-settings-footer {
+.tracevault-settings-footer {
 	align-items: center;
 	background: #fff;
 	border: 1px solid #dcdcde;
@@ -208,8 +208,8 @@
 	z-index: 2;
 }
 
-.oal-filters,
-.oal-export-form {
+.tracevault-filters,
+.tracevault-export-form {
 	align-items: end;
 	background: #fff;
 	border: 1px solid #dcdcde;
@@ -221,8 +221,8 @@
 	padding: 16px;
 }
 
-.oal-filters-simple {
-	background: var(--oal-soft);
+.tracevault-filters-simple {
+	background: var(--tracevault-soft);
 	border-width: 0 0 1px;
 	border-radius: 0;
 	grid-template-columns: minmax(160px, 1fr) minmax(140px, 180px) minmax(180px, 2fr) auto auto;
@@ -230,36 +230,36 @@
 	padding: 12px;
 }
 
-.oal-export-form label span {
+.tracevault-export-form label span {
 	display: block;
 	font-weight: 600;
 	margin-bottom: 4px;
 }
 
-.oal-filters input,
-.oal-filters select,
-.oal-export-form input,
-.oal-export-form select {
+.tracevault-filters input,
+.tracevault-filters select,
+.tracevault-export-form input,
+.tracevault-export-form select {
 	max-width: 100%;
 	width: 100%;
 }
 
-.oal-table-shell {
+.tracevault-table-shell {
 	overflow-x: auto;
 	padding: 0 18px 18px;
 }
 
-.oal-log-table td,
-.oal-log-table th {
+.tracevault-log-table td,
+.tracevault-log-table th {
 	vertical-align: top;
 }
 
-.oal-log-table {
+.tracevault-log-table {
 	border: 0;
 	box-shadow: none;
 }
 
-.oal-log-table thead th {
+.tracevault-log-table thead th {
 	background: #fff;
 	color: #64748b;
 	font-size: 11px;
@@ -268,25 +268,25 @@
 	text-transform: uppercase;
 }
 
-.oal-log-table tbody tr {
+.tracevault-log-table tbody tr {
 	transition: background-color 120ms ease, box-shadow 120ms ease;
 }
 
-.oal-log-table tbody tr:hover {
+.tracevault-log-table tbody tr:hover {
 	background: #f8fafc;
-	box-shadow: inset 3px 0 0 var(--oal-teal);
+	box-shadow: inset 3px 0 0 var(--tracevault-teal);
 }
 
-.oal-log-table td:nth-child(5) {
+.tracevault-log-table td:nth-child(5) {
 	min-width: 280px;
 }
 
-.oal-log-table td:nth-child(6) {
+.tracevault-log-table td:nth-child(6) {
 	white-space: nowrap;
 	width: 80px;
 }
 
-.oal-activity-cell {
+.tracevault-activity-cell {
 	align-items: center;
 	display: flex;
 	flex-wrap: wrap;
@@ -294,16 +294,16 @@
 	min-width: 180px;
 }
 
-.oal-activity-cell strong {
+.tracevault-activity-cell strong {
 	font-weight: 650;
 }
 
-.oal-event-icon {
+.tracevault-event-icon {
 	align-items: center;
 	background: #eef2ff;
 	border: 1px solid #c7d2fe;
 	border-radius: 999px;
-	color: var(--oal-primary);
+	color: var(--tracevault-primary);
 	display: inline-flex;
 	font-size: 11px;
 	font-weight: 700;
@@ -312,7 +312,7 @@
 	width: 24px;
 }
 
-.oal-severity {
+.tracevault-severity {
 	border-radius: 999px;
 	display: inline-block;
 	font-size: 12px;
@@ -321,34 +321,34 @@
 	padding: 5px 8px;
 }
 
-.oal-object {
+.tracevault-object {
 	color: #64748b;
 	display: inline-block;
 	font-size: 12px;
 	margin-top: 4px;
 }
 
-.oal-severity-1 {
+.tracevault-severity-1 {
 	background: #e0f2fe;
 	color: #075985;
 }
 
-.oal-severity-2 {
+.tracevault-severity-2 {
 	background: #ccfbf1;
 	color: #0f766e;
 }
 
-.oal-severity-3 {
+.tracevault-severity-3 {
 	background: #fef3c7;
 	color: #92400e;
 }
 
-.oal-severity-4 {
+.tracevault-severity-4 {
 	background: #fee2e2;
 	color: #991b1b;
 }
 
-.oal-pagination {
+.tracevault-pagination {
 	align-items: center;
 	display: flex;
 	gap: 12px;
@@ -357,89 +357,89 @@
 }
 
 @media (max-width: 960px) {
-	.oal-cards,
-	.oal-filters,
-	.oal-filters-simple,
-	.oal-export-form {
+	.tracevault-cards,
+	.tracevault-filters,
+	.tracevault-filters-simple,
+	.tracevault-export-form {
 		grid-template-columns: 1fr;
 	}
 
-	.oal-panel-header {
+	.tracevault-panel-header {
 		align-items: flex-start;
 		flex-direction: column;
 	}
 
-	.oal-setting-row {
+	.tracevault-setting-row {
 		grid-template-columns: 1fr;
 	}
 
-	.oal-page-heading {
+	.tracevault-page-heading {
 		display: block;
 	}
 
-	.oal-setting-row {
+	.tracevault-setting-row {
 		gap: 12px;
 		padding: 18px;
 	}
 
-	.oal-settings-form {
+	.tracevault-settings-form {
 		max-width: none;
 	}
 
-	.oal-settings-footer {
+	.tracevault-settings-footer {
 		position: static;
 	}
 }
 
 @media (prefers-color-scheme: dark) {
-	.admin-color-modern .oal-wrap,
-	.oal-wrap {
+	.admin-color-modern .tracevault-wrap,
+	.tracevault-wrap {
 		color: #e5e7eb;
 	}
 
-	.oal-card,
-	.oal-panel,
-	.oal-filters,
-	.oal-export-form,
-	.oal-settings-footer {
+	.tracevault-card,
+	.tracevault-panel,
+	.tracevault-filters,
+	.tracevault-export-form,
+	.tracevault-settings-footer {
 		background: #1f2937;
 		border-color: #374151;
 	}
 
-	.oal-panel-header,
-	.oal-log-table thead th {
+	.tracevault-panel-header,
+	.tracevault-log-table thead th {
 		background: #1f2937;
 		border-color: #374151;
 	}
 
-	.oal-subtitle,
-	.oal-card-label,
-	.oal-log-table thead th,
-	.oal-object,
-	.oal-setting-copy p,
-	.oal-panel-header p,
-	.oal-inline-control span {
+	.tracevault-subtitle,
+	.tracevault-card-label,
+	.tracevault-log-table thead th,
+	.tracevault-object,
+	.tracevault-setting-copy p,
+	.tracevault-panel-header p,
+	.tracevault-inline-control span {
 		color: #cbd5e1;
 	}
 
-	.oal-filters-simple {
+	.tracevault-filters-simple {
 		background: #111827;
 	}
 
-	.oal-setting-row + .oal-setting-row {
+	.tracevault-setting-row + .tracevault-setting-row {
 		border-color: #374151;
 	}
 
-	.oal-setting-row-danger {
+	.tracevault-setting-row-danger {
 		background: #2a1f24;
 	}
 
-	.oal-switch {
+	.tracevault-switch {
 		background: #111827;
 		border-color: #374151;
 	}
 
-	.oal-log-table tbody tr:hover {
+	.tracevault-log-table tbody tr:hover {
 		background: #111827;
 	}
 }

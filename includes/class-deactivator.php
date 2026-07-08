@@ -2,10 +2,10 @@
 /**
  * Deactivation routines.
  *
- * @package OpenActivityLogger
+ * @package TraceVaultAuditLog
  */
 
-namespace OpenActivityLogger;
+namespace TraceVaultAuditLog;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;

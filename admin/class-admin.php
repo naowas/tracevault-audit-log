@@ -2,10 +2,10 @@
 /**
  * Admin UI.
  *
- * @package OpenActivityLogger
+ * @package TraceVaultAuditLog
  */
 
-namespace OpenActivityLogger;
+namespace TraceVaultAuditLog;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -57,12 +57,12 @@ class Admin {
 	public function register() {
 		add_action( 'admin_menu', array( $this, 'menu' ) );
 		add_action( 'admin_enqueue_scripts', array( $this, 'assets' ) );
-		add_action( 'wp_ajax_oal_logs', array( $this, 'ajax_logs' ) );
-		add_action( 'wp_ajax_oal_stats', array( $this, 'ajax_stats' ) );
-		add_action( 'wp_ajax_oal_delete_log', array( $this, 'ajax_delete_log' ) );
-		add_action( 'wp_ajax_oal_clear_logs', array( $this, 'ajax_clear_logs' ) );
-		add_action( 'admin_post_oal_save_settings', array( $this, 'save_settings' ) );
-		add_action( 'admin_post_oal_export', array( $this, 'download_export' ) );
+		add_action( 'wp_ajax_tracevault_logs', array( $this, 'ajax_logs' ) );
+		add_action( 'wp_ajax_tracevault_stats', array( $this, 'ajax_stats' ) );
+		add_action( 'wp_ajax_tracevault_delete_log', array( $this, 'ajax_delete_log' ) );
+		add_action( 'wp_ajax_tracevault_clear_logs', array( $this, 'ajax_clear_logs' ) );
+		add_action( 'admin_post_tracevault_save_settings', array( $this, 'save_settings' ) );
+		add_action( 'admin_post_tracevault_export', array( $this, 'download_export' ) );
 	}
 
 	/**
@@ -71,7 +71,7 @@ class Admin {
 	 * @return bool
 	 */
 	private function can_manage() {
-		return current_user_can( 'manage_options' ) || current_user_can( 'oal_manage_logs' );
+		return current_user_can( 'manage_options' ) || current_user_can( 'tracevault_manage_logs' );
 	}
 
 	/**
@@ -80,7 +80,7 @@ class Admin {
 	 * @return bool
 	 */
 	private function can_export() {
-		return current_user_can( 'manage_options' ) || current_user_can( 'oal_export_logs' );
+		return current_user_can( 'manage_options' ) || current_user_can( 'tracevault_export_logs' );
 	}
 
 	/**
@@ -89,20 +89,20 @@ class Admin {
 	 * @return void
 	 */
 	public function menu() {
-		$capability = current_user_can( 'oal_manage_logs' ) ? 'oal_manage_logs' : 'manage_options';
+		$capability = current_user_can( 'tracevault_manage_logs' ) ? 'tracevault_manage_logs' : 'manage_options';
 
 		add_menu_page(
-			__( 'Open Activity Logger', 'open-activity-logger' ),
-			__( 'Activity Logs', 'open-activity-logger' ),
+			__( 'TraceVault Audit Log', 'tracevault-audit-log' ),
+			__( 'Activity Logs', 'tracevault-audit-log' ),
 			$capability,
-			'open-activity-logger',
+			'tracevault-audit-log',
 			array( $this, 'overview_page' ),
 			'dashicons-shield-alt',
 			58
 		);
 
-		add_submenu_page( 'open-activity-logger', __( 'Activity Logs', 'open-activity-logger' ), __( 'Activity Logs', 'open-activity-logger' ), $capability, 'open-activity-logger', array( $this, 'overview_page' ) );
-		add_submenu_page( 'open-activity-logger', __( 'Settings', 'open-activity-logger' ), __( 'Settings', 'open-activity-logger' ), $capability, 'oal-settings', array( $this, 'settings_page' ) );
+		add_submenu_page( 'tracevault-audit-log', __( 'Activity Logs', 'tracevault-audit-log' ), __( 'Activity Logs', 'tracevault-audit-log' ), $capability, 'tracevault-audit-log', array( $this, 'overview_page' ) );
+		add_submenu_page( 'tracevault-audit-log', __( 'Settings', 'tracevault-audit-log' ), __( 'Settings', 'tracevault-audit-log' ), $capability, 'tracevault-settings', array( $this, 'settings_page' ) );
 	}
 
 	/**
@@ -112,31 +112,31 @@ class Admin {
 	 * @return void
 	 */
 	public function assets( $hook ) {
-		if ( false === strpos( $hook, 'open-activity-logger' ) && false === strpos( $hook, 'oal-' ) ) {
+		if ( false === strpos( $hook, 'tracevault-audit-log' ) && false === strpos( $hook, 'tracevault-' ) ) {
 			return;
 		}
 
-		wp_enqueue_style( 'oal-admin', OAL_PLUGIN_URL . 'assets/css/admin.css', array(), OAL_VERSION );
-		wp_enqueue_script( 'oal-admin', OAL_PLUGIN_URL . 'assets/js/admin.js', array(), OAL_VERSION, true );
+		wp_enqueue_style( 'tracevault-admin', TRACEVAULT_PLUGIN_URL . 'assets/css/admin.css', array(), TRACEVAULT_VERSION );
+		wp_enqueue_script( 'tracevault-admin', TRACEVAULT_PLUGIN_URL . 'assets/js/admin.js', array(), TRACEVAULT_VERSION, true );
 		wp_localize_script(
-			'oal-admin',
-			'oalAdmin',
+			'tracevault-admin',
+			'tracevaultAdmin',
 			array(
 				'ajaxUrl' => admin_url( 'admin-ajax.php' ),
-				'nonce'   => wp_create_nonce( 'oal_admin' ),
+				'nonce'   => wp_create_nonce( 'tracevault_admin' ),
 				'i18n'    => array(
-					'loading' => __( 'Loading activity...', 'open-activity-logger' ),
-					'empty'   => __( 'No activity found.', 'open-activity-logger' ),
-					'error'   => __( 'Unable to load activity.', 'open-activity-logger' ),
-					'confirmDelete' => __( 'Delete this log entry?', 'open-activity-logger' ),
-					'confirmClear'  => __( 'Delete all activity logs? This cannot be undone.', 'open-activity-logger' ),
-					'delete'        => __( 'Delete', 'open-activity-logger' ),
+					'loading' => __( 'Loading activity...', 'tracevault-audit-log' ),
+					'empty'   => __( 'No activity found.', 'tracevault-audit-log' ),
+					'error'   => __( 'Unable to load activity.', 'tracevault-audit-log' ),
+					'confirmDelete' => __( 'Delete this log entry?', 'tracevault-audit-log' ),
+					'confirmClear'  => __( 'Delete all activity logs? This cannot be undone.', 'tracevault-audit-log' ),
+					'delete'        => __( 'Delete', 'tracevault-audit-log' ),
 					'events'        => $this->event_labels(),
 					'severity' => array(
-						1 => __( 'Info', 'open-activity-logger' ),
-						2 => __( 'Notice', 'open-activity-logger' ),
-						3 => __( 'Warning', 'open-activity-logger' ),
-						4 => __( 'Critical', 'open-activity-logger' ),
+						1 => __( 'Info', 'tracevault-audit-log' ),
+						2 => __( 'Notice', 'tracevault-audit-log' ),
+						3 => __( 'Warning', 'tracevault-audit-log' ),
+						4 => __( 'Critical', 'tracevault-audit-log' ),
 					),
 				),
 				'canDelete' => $this->can_manage(),
@@ -174,10 +174,10 @@ class Admin {
 	 * @return void
 	 */
 	public function ajax_logs() {
-		check_ajax_referer( 'oal_admin', 'nonce' );
+		check_ajax_referer( 'tracevault_admin', 'nonce' );
 
 		if ( ! $this->can_manage() ) {
-			wp_send_json_error( array( 'message' => __( 'Permission denied.', 'open-activity-logger' ) ), 403 );
+			wp_send_json_error( array( 'message' => __( 'Permission denied.', 'tracevault-audit-log' ) ), 403 );
 		}
 
 		$filters = $this->filters_from_request( $_GET );
@@ -199,10 +199,10 @@ class Admin {
 	 * @return void
 	 */
 	public function ajax_stats() {
-		check_ajax_referer( 'oal_admin', 'nonce' );
+		check_ajax_referer( 'tracevault_admin', 'nonce' );
 
 		if ( ! $this->can_manage() ) {
-			wp_send_json_error( array( 'message' => __( 'Permission denied.', 'open-activity-logger' ) ), 403 );
+			wp_send_json_error( array( 'message' => __( 'Permission denied.', 'tracevault-audit-log' ) ), 403 );
 		}
 
 		wp_send_json_success( $this->db->get_stats( array( 'days' => isset( $_GET['days'] ) ? absint( $_GET['days'] ) : 30, 'exclude_verbose' => 1 ) ) );
@@ -214,16 +214,16 @@ class Admin {
 	 * @return void
 	 */
 	public function ajax_delete_log() {
-		check_ajax_referer( 'oal_admin', 'nonce' );
+		check_ajax_referer( 'tracevault_admin', 'nonce' );
 
 		if ( ! $this->can_manage() ) {
-			wp_send_json_error( array( 'message' => __( 'Permission denied.', 'open-activity-logger' ) ), 403 );
+			wp_send_json_error( array( 'message' => __( 'Permission denied.', 'tracevault-audit-log' ) ), 403 );
 		}
 
 		$id = isset( $_POST['id'] ) ? absint( $_POST['id'] ) : 0;
 
 		if ( ! $id || ! $this->db->delete_log( $id ) ) {
-			wp_send_json_error( array( 'message' => __( 'Log could not be deleted.', 'open-activity-logger' ) ), 400 );
+			wp_send_json_error( array( 'message' => __( 'Log could not be deleted.', 'tracevault-audit-log' ) ), 400 );
 		}
 
 		wp_send_json_success();
@@ -235,10 +235,10 @@ class Admin {
 	 * @return void
 	 */
 	public function ajax_clear_logs() {
-		check_ajax_referer( 'oal_admin', 'nonce' );
+		check_ajax_referer( 'tracevault_admin', 'nonce' );
 
 		if ( ! $this->can_manage() ) {
-			wp_send_json_error( array( 'message' => __( 'Permission denied.', 'open-activity-logger' ) ), 403 );
+			wp_send_json_error( array( 'message' => __( 'Permission denied.', 'tracevault-audit-log' ) ), 403 );
 		}
 
 		$this->db->clear_logs();
@@ -252,13 +252,13 @@ class Admin {
 	 */
 	public function save_settings() {
 		if ( ! $this->can_manage() ) {
-			wp_die( esc_html__( 'Permission denied.', 'open-activity-logger' ), 403 );
+			wp_die( esc_html__( 'Permission denied.', 'tracevault-audit-log' ), 403 );
 		}
 
-		check_admin_referer( 'oal_save_settings' );
+		check_admin_referer( 'tracevault_save_settings' );
 		$this->settings->save_from_request( wp_unslash( $_POST ) );
 
-		wp_safe_redirect( add_query_arg( array( 'page' => 'oal-settings', 'updated' => '1' ), admin_url( 'admin.php' ) ) );
+		wp_safe_redirect( add_query_arg( array( 'page' => 'tracevault-settings', 'updated' => '1' ), admin_url( 'admin.php' ) ) );
 		exit;
 	}
 
@@ -269,10 +269,10 @@ class Admin {
 	 */
 	public function download_export() {
 		if ( ! $this->can_export() ) {
-			wp_die( esc_html__( 'Permission denied.', 'open-activity-logger' ), 403 );
+			wp_die( esc_html__( 'Permission denied.', 'tracevault-audit-log' ), 403 );
 		}
 
-		check_admin_referer( 'oal_export' );
+		check_admin_referer( 'tracevault_export' );
 		$format = isset( $_GET['format'] ) ? sanitize_key( wp_unslash( $_GET['format'] ) ) : 'csv';
 		$this->exporter->download( $format, $this->filters_from_request( $_GET ) );
 	}
@@ -286,11 +286,11 @@ class Admin {
 	 */
 	private function render( $view, array $data = array() ) {
 		if ( ! $this->can_manage() ) {
-			wp_die( esc_html__( 'Permission denied.', 'open-activity-logger' ), 403 );
+			wp_die( esc_html__( 'Permission denied.', 'tracevault-audit-log' ), 403 );
 		}
 
 		$view = sanitize_key( $view );
-		$path = OAL_PLUGIN_DIR . 'admin/views/' . $view . '.php';
+		$path = TRACEVAULT_PLUGIN_DIR . 'admin/views/' . $view . '.php';
 
 		if ( ! file_exists( $path ) ) {
 			return;
@@ -352,7 +352,7 @@ class Admin {
 		if ( 'relative' === $format ) {
 			return sprintf(
 				/* translators: %s: human time difference. */
-				__( '%s ago', 'open-activity-logger' ),
+				__( '%s ago', 'tracevault-audit-log' ),
 				human_time_diff( $timestamp, current_time( 'timestamp' ) )
 			);
 		}
@@ -371,38 +371,38 @@ class Admin {
 	 */
 	private function event_labels() {
 		return array(
-			'user.login'                        => __( 'User login', 'open-activity-logger' ),
-			'user.logout'                       => __( 'User logout', 'open-activity-logger' ),
-			'user.login_failed'                 => __( 'Failed login', 'open-activity-logger' ),
-			'user.profile_update'               => __( 'Profile update', 'open-activity-logger' ),
-			'user.password_change'              => __( 'Password change', 'open-activity-logger' ),
-			'user.role_change'                  => __( 'Role change', 'open-activity-logger' ),
-			'user.create'                       => __( 'User created', 'open-activity-logger' ),
-			'user.delete'                       => __( 'User deleted', 'open-activity-logger' ),
-			'content.create'                    => __( 'Content created', 'open-activity-logger' ),
-			'content.update'                    => __( 'Content updated', 'open-activity-logger' ),
-			'content.delete'                    => __( 'Content deleted', 'open-activity-logger' ),
-			'media.upload'                      => __( 'Media uploaded', 'open-activity-logger' ),
-			'media.delete'                      => __( 'Media deleted', 'open-activity-logger' ),
-			'comment.create'                    => __( 'Comment created', 'open-activity-logger' ),
-			'comment.status_change'             => __( 'Comment status', 'open-activity-logger' ),
-			'comment.delete'                    => __( 'Comment deleted', 'open-activity-logger' ),
-			'system.plugin_activate'            => __( 'Plugin activated', 'open-activity-logger' ),
-			'system.plugin_deactivate'          => __( 'Plugin deactivated', 'open-activity-logger' ),
-			'system.plugin_delete'              => __( 'Plugin deleted', 'open-activity-logger' ),
-			'system.plugin_install'             => __( 'Plugin installed', 'open-activity-logger' ),
-			'system.plugin_update'              => __( 'Plugin updated', 'open-activity-logger' ),
-			'system.theme_install'              => __( 'Theme installed', 'open-activity-logger' ),
-			'system.theme_update'               => __( 'Theme updated', 'open-activity-logger' ),
-			'system.theme_switch'               => __( 'Theme switched', 'open-activity-logger' ),
-			'system.option_update'              => __( 'Setting changed', 'open-activity-logger' ),
-			'woocommerce.order_create'          => __( 'Order created', 'open-activity-logger' ),
-			'woocommerce.order_update'          => __( 'Order updated', 'open-activity-logger' ),
-			'woocommerce.order_status_change'   => __( 'Order status', 'open-activity-logger' ),
-			'woocommerce.product_create'        => __( 'Product created', 'open-activity-logger' ),
-			'woocommerce.product_update'        => __( 'Product updated', 'open-activity-logger' ),
-			'woocommerce.coupon_create'         => __( 'Coupon created', 'open-activity-logger' ),
-			'woocommerce.coupon_update'         => __( 'Coupon updated', 'open-activity-logger' ),
+			'user.login'                        => __( 'User login', 'tracevault-audit-log' ),
+			'user.logout'                       => __( 'User logout', 'tracevault-audit-log' ),
+			'user.login_failed'                 => __( 'Failed login', 'tracevault-audit-log' ),
+			'user.profile_update'               => __( 'Profile update', 'tracevault-audit-log' ),
+			'user.password_change'              => __( 'Password change', 'tracevault-audit-log' ),
+			'user.role_change'                  => __( 'Role change', 'tracevault-audit-log' ),
+			'user.create'                       => __( 'User created', 'tracevault-audit-log' ),
+			'user.delete'                       => __( 'User deleted', 'tracevault-audit-log' ),
+			'content.create'                    => __( 'Content created', 'tracevault-audit-log' ),
+			'content.update'                    => __( 'Content updated', 'tracevault-audit-log' ),
+			'content.delete'                    => __( 'Content deleted', 'tracevault-audit-log' ),
+			'media.upload'                      => __( 'Media uploaded', 'tracevault-audit-log' ),
+			'media.delete'                      => __( 'Media deleted', 'tracevault-audit-log' ),
+			'comment.create'                    => __( 'Comment created', 'tracevault-audit-log' ),
+			'comment.status_change'             => __( 'Comment status', 'tracevault-audit-log' ),
+			'comment.delete'                    => __( 'Comment deleted', 'tracevault-audit-log' ),
+			'system.plugin_activate'            => __( 'Plugin activated', 'tracevault-audit-log' ),
+			'system.plugin_deactivate'          => __( 'Plugin deactivated', 'tracevault-audit-log' ),
+			'system.plugin_delete'              => __( 'Plugin deleted', 'tracevault-audit-log' ),
+			'system.plugin_install'             => __( 'Plugin installed', 'tracevault-audit-log' ),
+			'system.plugin_update'              => __( 'Plugin updated', 'tracevault-audit-log' ),
+			'system.theme_install'              => __( 'Theme installed', 'tracevault-audit-log' ),
+			'system.theme_update'               => __( 'Theme updated', 'tracevault-audit-log' ),
+			'system.theme_switch'               => __( 'Theme switched', 'tracevault-audit-log' ),
+			'system.option_update'              => __( 'Setting changed', 'tracevault-audit-log' ),
+			'woocommerce.order_create'          => __( 'Order created', 'tracevault-audit-log' ),
+			'woocommerce.order_update'          => __( 'Order updated', 'tracevault-audit-log' ),
+			'woocommerce.order_status_change'   => __( 'Order status', 'tracevault-audit-log' ),
+			'woocommerce.product_create'        => __( 'Product created', 'tracevault-audit-log' ),
+			'woocommerce.product_update'        => __( 'Product updated', 'tracevault-audit-log' ),
+			'woocommerce.coupon_create'         => __( 'Coupon created', 'tracevault-audit-log' ),
+			'woocommerce.coupon_update'         => __( 'Coupon updated', 'tracevault-audit-log' ),
 		);
 	}
 }

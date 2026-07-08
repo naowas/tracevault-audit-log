@@ -2,22 +2,22 @@
 # This file is distributed under the GPLv2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Open Activity Logger 1.0.0\n"
-"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/open-activity-logger\n"
+"Project-Id-Version: TraceVault Audit Log 1.0.0\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/tracevault-audit-log\n"
 "POT-Creation-Date: 2026-07-06 00:00+0000\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Open Activity Logger\n"
-"X-Domain: open-activity-logger\n"
+"X-Generator: TraceVault Audit Log\n"
+"X-Domain: tracevault-audit-log\n"
 
-msgid "Open Activity Logger"
+msgid "TraceVault Audit Log"
 msgstr ""
 
 msgid "Track every action. Stay in control."
 msgstr ""
 
-msgid "Activity Logger"
+msgid "Audit Trail"
 msgstr ""
 
 msgid "Settings"

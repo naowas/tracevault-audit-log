@@ -2,10 +2,10 @@
 /**
  * Event capture.
  *
- * @package OpenActivityLogger
+ * @package TraceVaultAuditLog
  */
 
-namespace OpenActivityLogger;
+namespace TraceVaultAuditLog;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -93,7 +93,7 @@ class Events {
 				array(
 					'user'      => $user,
 					/* translators: %s: user login. */
-					'message'   => sprintf( __( 'User "%s" logged in.', 'open-activity-logger' ), $user_login ),
+					'message'   => sprintf( __( 'User "%s" logged in.', 'tracevault-audit-log' ), $user_login ),
 				'severity'  => Logger::SEVERITY_INFO,
 				'object_type' => 'user',
 				'object_id' => $user->ID,
@@ -114,7 +114,7 @@ class Events {
 				'user'        => $user,
 				'object_type' => 'user',
 				'object_id'   => $user instanceof \WP_User ? $user->ID : 0,
-				'message'     => __( 'User logged out.', 'open-activity-logger' ),
+				'message'     => __( 'User logged out.', 'tracevault-audit-log' ),
 			)
 		);
 	}
@@ -133,7 +133,7 @@ class Events {
 					'severity' => Logger::SEVERITY_WARNING,
 					'object_type' => 'user',
 					/* translators: %s: attempted username. */
-					'message'  => sprintf( __( 'Failed login attempt for "%s".', 'open-activity-logger' ), sanitize_user( $username ) ),
+					'message'  => sprintf( __( 'Failed login attempt for "%s".', 'tracevault-audit-log' ), sanitize_user( $username ) ),
 			)
 		);
 	}
@@ -154,7 +154,7 @@ class Events {
 					'object_type' => 'user',
 					'object_id'   => $user_id,
 					/* translators: %d: user ID. */
-					'message'     => sprintf( __( 'Profile updated for user ID %d.', 'open-activity-logger' ), $user_id ),
+					'message'     => sprintf( __( 'Profile updated for user ID %d.', 'tracevault-audit-log' ), $user_id ),
 				'meta'        => array(
 					'user_login' => $old_user_data instanceof \WP_User ? $old_user_data->user_login : '',
 				),
@@ -180,7 +180,7 @@ class Events {
 					'object_id'   => $user->ID,
 					'severity'    => Logger::SEVERITY_NOTICE,
 					/* translators: %s: user login. */
-					'message'     => sprintf( __( 'Password changed for "%s".', 'open-activity-logger' ), $user->user_login ),
+					'message'     => sprintf( __( 'Password changed for "%s".', 'tracevault-audit-log' ), $user->user_login ),
 			)
 		);
 	}
@@ -201,7 +201,7 @@ class Events {
 					'object_id'   => $user_id,
 					'severity'    => Logger::SEVERITY_NOTICE,
 					/* translators: 1: user ID, 2: new role. */
-					'message'     => sprintf( __( 'Role changed for user ID %1$d to %2$s.', 'open-activity-logger' ), $user_id, $role ),
+					'message'     => sprintf( __( 'Role changed for user ID %1$d to %2$s.', 'tracevault-audit-log' ), $user_id, $role ),
 				'meta'        => array(
 					'old_roles' => implode( ',', array_map( 'sanitize_key', (array) $old_roles ) ),
 					'new_role'  => sanitize_key( $role ),
@@ -226,7 +226,7 @@ class Events {
 					'object_type' => 'user',
 					'object_id'   => $user_id,
 					/* translators: %d: user ID. */
-					'message'     => sprintf( __( 'User ID %d was created.', 'open-activity-logger' ), $user_id ),
+					'message'     => sprintf( __( 'User ID %d was created.', 'tracevault-audit-log' ), $user_id ),
 			)
 		);
 	}
@@ -245,7 +245,7 @@ class Events {
 					'object_id'   => $user_id,
 					'severity'    => Logger::SEVERITY_WARNING,
 					/* translators: %d: user ID. */
-					'message'     => sprintf( __( 'User ID %d was deleted.', 'open-activity-logger' ), $user_id ),
+					'message'     => sprintf( __( 'User ID %d was deleted.', 'tracevault-audit-log' ), $user_id ),
 			)
 		);
 	}
@@ -273,7 +273,7 @@ class Events {
 					'object_type' => $post->post_type,
 					'object_id'   => $post_id,
 					/* translators: 1: post type, 2: post title, 3: action label. */
-					'message'     => sprintf( __( '%1$s "%2$s" was %3$s.', 'open-activity-logger' ), ucfirst( $post->post_type ), $post->post_title, $update ? __( 'updated', 'open-activity-logger' ) : __( 'created', 'open-activity-logger' ) ),
+					'message'     => sprintf( __( '%1$s "%2$s" was %3$s.', 'tracevault-audit-log' ), ucfirst( $post->post_type ), $post->post_title, $update ? __( 'updated', 'tracevault-audit-log' ) : __( 'created', 'tracevault-audit-log' ) ),
 				'meta'        => array(
 					'post_status' => $post->post_status,
 				),
@@ -301,7 +301,7 @@ class Events {
 					'object_id'   => $post_id,
 					'severity'    => Logger::SEVERITY_WARNING,
 					/* translators: 1: post type, 2: post title. */
-					'message'     => sprintf( __( '%1$s "%2$s" was deleted.', 'open-activity-logger' ), ucfirst( $post->post_type ), $post->post_title ),
+					'message'     => sprintf( __( '%1$s "%2$s" was deleted.', 'tracevault-audit-log' ), ucfirst( $post->post_type ), $post->post_title ),
 			)
 		);
 	}
@@ -326,7 +326,7 @@ class Events {
 					'object_id'   => $post_id,
 					'severity'    => Logger::SEVERITY_WARNING,
 					/* translators: 1: post type, 2: post title. */
-					'message'     => sprintf( __( '%1$s "%2$s" was moved to trash.', 'open-activity-logger' ), ucfirst( $post->post_type ), $post->post_title ),
+					'message'     => sprintf( __( '%1$s "%2$s" was moved to trash.', 'tracevault-audit-log' ), ucfirst( $post->post_type ), $post->post_title ),
 			)
 		);
 	}
@@ -344,7 +344,7 @@ class Events {
 					'object_type' => 'attachment',
 					'object_id'   => $attachment_id,
 					/* translators: %d: attachment ID. */
-					'message'     => sprintf( __( 'Media attachment ID %d was uploaded.', 'open-activity-logger' ), $attachment_id ),
+					'message'     => sprintf( __( 'Media attachment ID %d was uploaded.', 'tracevault-audit-log' ), $attachment_id ),
 			)
 		);
 	}
@@ -363,7 +363,7 @@ class Events {
 					'object_id'   => $attachment_id,
 					'severity'    => Logger::SEVERITY_WARNING,
 					/* translators: %d: attachment ID. */
-					'message'     => sprintf( __( 'Media attachment ID %d was deleted.', 'open-activity-logger' ), $attachment_id ),
+					'message'     => sprintf( __( 'Media attachment ID %d was deleted.', 'tracevault-audit-log' ), $attachment_id ),
 			)
 		);
 	}
@@ -382,7 +382,7 @@ class Events {
 					'object_type' => 'comment',
 					'object_id'   => $comment_id,
 					/* translators: %d: comment ID. */
-					'message'     => sprintf( __( 'Comment ID %d was created.', 'open-activity-logger' ), $comment_id ),
+					'message'     => sprintf( __( 'Comment ID %d was created.', 'tracevault-audit-log' ), $comment_id ),
 				'meta'        => array(
 					'post_id' => $comment instanceof \WP_Comment ? $comment->comment_post_ID : 0,
 				),
@@ -409,7 +409,7 @@ class Events {
 					'object_type' => 'comment',
 					'object_id'   => $comment->comment_ID,
 					/* translators: 1: comment ID, 2: old comment status, 3: new comment status. */
-					'message'     => sprintf( __( 'Comment ID %1$d changed from %2$s to %3$s.', 'open-activity-logger' ), $comment->comment_ID, $old_status, $new_status ),
+					'message'     => sprintf( __( 'Comment ID %1$d changed from %2$s to %3$s.', 'tracevault-audit-log' ), $comment->comment_ID, $old_status, $new_status ),
 			)
 		);
 	}
@@ -428,7 +428,7 @@ class Events {
 					'object_id'   => $comment_id,
 					'severity'    => Logger::SEVERITY_WARNING,
 					/* translators: %d: comment ID. */
-					'message'     => sprintf( __( 'Comment ID %d was deleted.', 'open-activity-logger' ), $comment_id ),
+					'message'     => sprintf( __( 'Comment ID %d was deleted.', 'tracevault-audit-log' ), $comment_id ),
 			)
 		);
 	}
@@ -446,7 +446,7 @@ class Events {
 				array(
 					'object_type' => 'plugin',
 					/* translators: %s: plugin basename. */
-					'message'     => sprintf( __( 'Plugin "%s" was activated.', 'open-activity-logger' ), $plugin ),
+					'message'     => sprintf( __( 'Plugin "%s" was activated.', 'tracevault-audit-log' ), $plugin ),
 				'meta'        => array( 'network_wide' => (bool) $network_wide ),
 			)
 		);
@@ -466,7 +466,7 @@ class Events {
 					'object_type' => 'plugin',
 					'severity'    => Logger::SEVERITY_NOTICE,
 					/* translators: %s: plugin basename. */
-					'message'     => sprintf( __( 'Plugin "%s" was deactivated.', 'open-activity-logger' ), $plugin ),
+					'message'     => sprintf( __( 'Plugin "%s" was deactivated.', 'tracevault-audit-log' ), $plugin ),
 				'meta'        => array( 'network_wide' => (bool) $network_wide ),
 			)
 		);
@@ -490,7 +490,7 @@ class Events {
 					'object_type' => 'plugin',
 					'severity'    => Logger::SEVERITY_WARNING,
 					/* translators: %s: plugin basename. */
-					'message'     => sprintf( __( 'Plugin "%s" was deleted.', 'open-activity-logger' ), $plugin ),
+					'message'     => sprintf( __( 'Plugin "%s" was deleted.', 'tracevault-audit-log' ), $plugin ),
 			)
 		);
 	}
@@ -518,7 +518,7 @@ class Events {
 					'object_type' => $type,
 					'severity'    => Logger::SEVERITY_NOTICE,
 					/* translators: 1: object type, 2: action. */
-					'message'     => sprintf( __( '%1$s %2$s completed.', 'open-activity-logger' ), ucfirst( $type ), $action ),
+					'message'     => sprintf( __( '%1$s %2$s completed.', 'tracevault-audit-log' ), ucfirst( $type ), $action ),
 				'meta'        => array(
 					'bulk' => ! empty( $hook_extra['bulk'] ),
 				),
@@ -541,7 +541,7 @@ class Events {
 					'object_type' => 'theme',
 					'severity'    => Logger::SEVERITY_NOTICE,
 					/* translators: %s: theme name. */
-					'message'     => sprintf( __( 'Theme switched to "%s".', 'open-activity-logger' ), $new_name ),
+					'message'     => sprintf( __( 'Theme switched to "%s".', 'tracevault-audit-log' ), $new_name ),
 				'meta'        => array(
 					'old_theme' => $old_theme instanceof \WP_Theme ? $old_theme->get( 'Name' ) : '',
 					'new_theme' => $new_theme instanceof \WP_Theme ? $new_theme->get( 'Name' ) : $new_name,
@@ -575,7 +575,7 @@ class Events {
 					'object_type' => 'option',
 					'severity'    => Logger::SEVERITY_NOTICE,
 					/* translators: %s: option name. */
-					'message'     => sprintf( __( 'Option "%s" was updated.', 'open-activity-logger' ), $option ),
+					'message'     => sprintf( __( 'Option "%s" was updated.', 'tracevault-audit-log' ), $option ),
 				'meta'        => array( 'option' => sanitize_key( $option ) ),
 			)
 		);
@@ -590,7 +590,7 @@ class Events {
 	private function is_ignored_option( $option ) {
 		$option = (string) $option;
 
-		if ( 'cron' === $option || 0 === strpos( $option, 'oal_' ) || 0 === strpos( $option, '_transient_' ) || 0 === strpos( $option, '_site_transient_' ) ) {
+		if ( 'cron' === $option || 0 === strpos( $option, 'tracevault_' ) || 0 === strpos( $option, '_transient_' ) || 0 === strpos( $option, '_site_transient_' ) ) {
 			return true;
 		}
 
@@ -617,7 +617,7 @@ class Events {
 		 * @param bool   $ignored Whether ignored.
 		 * @param string $option  Option key.
 		 */
-		return (bool) apply_filters( 'oal_ignore_option_update', false, $option );
+		return (bool) apply_filters( 'tracevault_ignore_option_update', false, $option );
 	}
 
 	/**
@@ -633,7 +633,7 @@ class Events {
 				'object_type' => 'shop_order',
 				'object_id'   => $order_id,
 				/* translators: %d: WooCommerce order ID. */
-				'message'     => sprintf( __( 'WooCommerce order ID %d was created.', 'open-activity-logger' ), $order_id ),
+				'message'     => sprintf( __( 'WooCommerce order ID %d was created.', 'tracevault-audit-log' ), $order_id ),
 			)
 		);
 	}
@@ -651,7 +651,7 @@ class Events {
 				'object_type' => 'shop_order',
 				'object_id'   => $order_id,
 				/* translators: %d: WooCommerce order ID. */
-				'message'     => sprintf( __( 'WooCommerce order ID %d was updated.', 'open-activity-logger' ), $order_id ),
+				'message'     => sprintf( __( 'WooCommerce order ID %d was updated.', 'tracevault-audit-log' ), $order_id ),
 			)
 		);
 	}
@@ -674,7 +674,7 @@ class Events {
 				'object_id'   => $order_id,
 				'severity'    => Logger::SEVERITY_NOTICE,
 				/* translators: 1: WooCommerce order ID, 2: old order status, 3: new order status. */
-				'message'     => sprintf( __( 'WooCommerce order ID %1$d changed from %2$s to %3$s.', 'open-activity-logger' ), $order_id, $old_status, $new_status ),
+				'message'     => sprintf( __( 'WooCommerce order ID %1$d changed from %2$s to %3$s.', 'tracevault-audit-log' ), $order_id, $old_status, $new_status ),
 			)
 		);
 	}
@@ -698,7 +698,7 @@ class Events {
 				'object_type' => 'product',
 				'object_id'   => $post_id,
 				/* translators: %s: WooCommerce product title. */
-				'message'     => sprintf( __( 'WooCommerce product "%s" was saved.', 'open-activity-logger' ), $post->post_title ),
+				'message'     => sprintf( __( 'WooCommerce product "%s" was saved.', 'tracevault-audit-log' ), $post->post_title ),
 			)
 		);
 	}
@@ -722,7 +722,7 @@ class Events {
 				'object_type' => 'shop_coupon',
 				'object_id'   => $post_id,
 				/* translators: %s: WooCommerce coupon title. */
-				'message'     => sprintf( __( 'WooCommerce coupon "%s" was saved.', 'open-activity-logger' ), $post->post_title ),
+				'message'     => sprintf( __( 'WooCommerce coupon "%s" was saved.', 'tracevault-audit-log' ), $post->post_title ),
 			)
 		);
 	}

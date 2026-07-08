@@ -2,10 +2,10 @@
 /**
  * Database layer.
  *
- * @package OpenActivityLogger
+ * @package TraceVaultAuditLog
  */
 
-namespace OpenActivityLogger;
+namespace TraceVaultAuditLog;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -35,7 +35,7 @@ class DB {
 			return '';
 		}
 
-		return esc_sql( $wpdb->prefix . 'oal_' . $table );
+		return esc_sql( $wpdb->prefix . 'tracevault_' . $table );
 	}
 
 	/**
@@ -182,7 +182,7 @@ class DB {
 			$log_id = $first_id + $index;
 
 			$this->queue_meta_rows( $meta_rows, $log_id, $log['meta'] );
-			do_action( 'oal_log_created', $log_id, $log );
+			do_action( 'tracevault_log_created', $log_id, $log );
 		}
 
 		$this->insert_meta_rows( $meta_rows );
@@ -371,7 +371,7 @@ class DB {
 		global $wpdb;
 
 		$id    = absint( $id );
-		$cache = wp_cache_get( 'log_' . $id, 'open_activity_logger' );
+		$cache = wp_cache_get( 'log_' . $id, 'tracevault_audit_log' );
 
 		if ( false !== $cache ) {
 			return $cache;
@@ -386,7 +386,7 @@ class DB {
 		}
 
 		$log = $this->decode_log( $row );
-		wp_cache_set( 'log_' . $id, $log, 'open_activity_logger', MINUTE_IN_SECONDS );
+		wp_cache_set( 'log_' . $id, $log, 'tracevault_audit_log', MINUTE_IN_SECONDS );
 
 		return $log;
 	}
@@ -410,10 +410,10 @@ class DB {
 		$wpdb->delete( $this->table( 'meta' ), array( 'log_id' => $id ), array( '%d' ) );
 		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery -- Deleting from plugin-owned custom table after nonce/capability checks.
 		$deleted = $wpdb->delete( $this->table( 'logs' ), array( 'id' => $id ), array( '%d' ) );
-		wp_cache_delete( 'log_' . $id, 'open_activity_logger' );
+		wp_cache_delete( 'log_' . $id, 'tracevault_audit_log' );
 
 		if ( $deleted ) {
-			do_action( 'oal_log_deleted', $id );
+			do_action( 'tracevault_log_deleted', $id );
 		}
 
 		return (bool) $deleted;
@@ -527,7 +527,7 @@ class DB {
 		return $wpdb->update(
 			$table,
 			array(
-				'username'   => __( 'Anonymized user', 'open-activity-logger' ),
+				'username'   => __( 'Anonymized user', 'tracevault-audit-log' ),
 				'ip_address' => '',
 				'user_agent' => '',
 				'meta'       => '{}',

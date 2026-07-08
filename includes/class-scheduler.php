@@ -2,10 +2,10 @@
 /**
  * Cleanup scheduler.
  *
- * @package OpenActivityLogger
+ * @package TraceVaultAuditLog
  */
 
-namespace OpenActivityLogger;
+namespace TraceVaultAuditLog;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -15,7 +15,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Handles WP-Cron retention cleanup.
  */
 class Scheduler {
-	const CLEANUP_HOOK = 'oal_daily_cleanup';
+	const CLEANUP_HOOK = 'tracevault_daily_cleanup';
 
 	/**
 	 * Database layer.

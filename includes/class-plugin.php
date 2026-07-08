@@ -2,10 +2,10 @@
 /**
  * Main plugin coordinator.
  *
- * @package OpenActivityLogger
+ * @package TraceVaultAuditLog
  */
 
-namespace OpenActivityLogger;
+namespace TraceVaultAuditLog;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -85,7 +85,7 @@ final class Plugin {
 		( new Privacy( $this->db ) )->register();
 
 		if ( is_admin() ) {
-			( new \OpenActivityLogger\Admin( $this->db, $this->settings, $this->exporter ) )->register();
+			( new \TraceVaultAuditLog\Admin( $this->db, $this->settings, $this->exporter ) )->register();
 		}
 	}
 

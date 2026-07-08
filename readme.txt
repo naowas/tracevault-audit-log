@@ -1,4 +1,4 @@
-=== Open Activity Logger ===
+=== TraceVault Audit Log ===
 Contributors: naowas
 Tags: activity log, audit log, security, monitoring, woocommerce
 Requires at least: 5.0
@@ -12,7 +12,7 @@ Secure, extensible activity logging and audit reporting for WordPress.
 
 == Description ==
 
-Open Activity Logger records important WordPress activity into optimized custom tables and provides a modern wp-admin dashboard for overview analytics, live activity, advanced search, user reports, filtered exports, settings, and retention controls.
+TraceVault Audit Log records important WordPress activity into optimized custom tables and provides a modern wp-admin dashboard for overview analytics, live activity, advanced search, user reports, filtered exports, settings, and retention controls.
 
 The plugin is designed for transparency, security, and operational control. It logs user, content, comment, media, plugin, theme, option, and optional WooCommerce events.
 
@@ -31,16 +31,16 @@ Core features:
 
 == Installation ==
 
-1. Upload the `open-activity-logger` folder to `/wp-content/plugins/`.
+1. Upload the `tracevault-audit-log` folder to `/wp-content/plugins/`.
 2. Activate the plugin through the Plugins screen.
-3. Open **Activity Logger** in wp-admin.
+3. Open **Audit Trail** in wp-admin.
 4. Configure retention and privacy settings.
 
 == Frequently Asked Questions ==
 
 = Does this plugin use custom tables? =
 
-Yes. It creates `wp_oal_logs`, `wp_oal_meta`, and `wp_oal_settings` for each site.
+Yes. It creates `wp_tracevault_logs`, `wp_tracevault_meta`, and `wp_tracevault_settings` for each site.
 
 = Does it support multisite? =
 

@@ -2,10 +2,10 @@
 /**
  * Export service.
  *
- * @package OpenActivityLogger
+ * @package TraceVaultAuditLog
  */
 
-namespace OpenActivityLogger;
+namespace TraceVaultAuditLog;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -70,14 +70,14 @@ class Exporter {
 
 		if ( 'json' === $format ) {
 			return array(
-				'filename' => 'open-activity-logger-' . gmdate( 'Ymd-His' ) . '.json',
+				'filename' => 'tracevault-audit-log-' . gmdate( 'Ymd-His' ) . '.json',
 				'mime'     => 'application/json',
 				'content'  => wp_json_encode( $items, JSON_PRETTY_PRINT ),
 			);
 		}
 
 		return array(
-			'filename' => 'open-activity-logger-' . gmdate( 'Ymd-His' ) . '.csv',
+			'filename' => 'tracevault-audit-log-' . gmdate( 'Ymd-His' ) . '.csv',
 			'mime'     => 'text/csv',
 			'content'  => $this->to_csv( $items ),
 		);

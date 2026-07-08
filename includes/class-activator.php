@@ -2,10 +2,10 @@
 /**
  * Activation routines.
  *
- * @package OpenActivityLogger
+ * @package TraceVaultAuditLog
  */
 
-namespace OpenActivityLogger;
+namespace TraceVaultAuditLog;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -57,8 +57,8 @@ final class Activator {
 		$role = get_role( 'administrator' );
 
 		if ( $role ) {
-			$role->add_cap( 'oal_manage_logs' );
-			$role->add_cap( 'oal_export_logs' );
+			$role->add_cap( 'tracevault_manage_logs' );
+			$role->add_cap( 'tracevault_export_logs' );
 		}
 	}
 }

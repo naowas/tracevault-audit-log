@@ -2,10 +2,10 @@
 /**
  * REST API controller.
  *
- * @package OpenActivityLogger
+ * @package TraceVaultAuditLog
  */
 
-namespace OpenActivityLogger;
+namespace TraceVaultAuditLog;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -15,7 +15,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Registers REST endpoints for logs, stats, and exports.
  */
 class Rest {
-	const NAMESPACE = 'open-activity-logger/v1';
+	const NAMESPACE = 'tracevault-audit-log/v1';
 
 	/**
 	 * Database layer.
@@ -112,7 +112,7 @@ class Rest {
 	 * @return bool
 	 */
 	public function permissions() {
-		return current_user_can( 'manage_options' ) || current_user_can( 'oal_manage_logs' );
+		return current_user_can( 'manage_options' ) || current_user_can( 'tracevault_manage_logs' );
 	}
 
 	/**
@@ -121,7 +121,7 @@ class Rest {
 	 * @return bool
 	 */
 	public function export_permissions() {
-		return current_user_can( 'manage_options' ) || current_user_can( 'oal_export_logs' );
+		return current_user_can( 'manage_options' ) || current_user_can( 'tracevault_export_logs' );
 	}
 
 	/**
@@ -146,7 +146,7 @@ class Rest {
 		$log = $this->db->get_log( absint( $request['id'] ) );
 
 		if ( ! $log ) {
-			return new \WP_Error( 'oal_not_found', __( 'Log not found.', 'open-activity-logger' ), array( 'status' => 404 ) );
+			return new \WP_Error( 'tracevault_not_found', __( 'Log not found.', 'tracevault-audit-log' ), array( 'status' => 404 ) );
 		}
 
 		return rest_ensure_response( $log );

@@ -2,10 +2,10 @@
 /**
  * Settings repository.
  *
- * @package OpenActivityLogger
+ * @package TraceVaultAuditLog
  */
 
-namespace OpenActivityLogger;
+namespace TraceVaultAuditLog;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -44,7 +44,7 @@ class Settings {
 			'capture_option_updates'   => 0,
 			'admin_date_format'        => 'wordpress',
 			'enabled_events'           => array(),
-			'schema_version'           => OAL_VERSION,
+			'schema_version'           => TRACEVAULT_VERSION,
 		);
 	}
 
@@ -65,7 +65,7 @@ class Settings {
 		}
 
 		$cache_key = 'setting_' . $key;
-		$cached    = wp_cache_get( $cache_key, 'open_activity_logger' );
+		$cached    = wp_cache_get( $cache_key, 'tracevault_audit_log' );
 
 		if ( false !== $cached ) {
 			return $cached;
@@ -83,7 +83,7 @@ class Settings {
 			$value   = ( JSON_ERROR_NONE === json_last_error() ) ? $decoded : $value;
 		}
 
-		wp_cache_set( $cache_key, $value, 'open_activity_logger', MINUTE_IN_SECONDS );
+		wp_cache_set( $cache_key, $value, 'tracevault_audit_log', MINUTE_IN_SECONDS );
 
 		return $value;
 	}
@@ -120,7 +120,7 @@ class Settings {
 			array( '%s', '%s' )
 		);
 
-		wp_cache_delete( 'setting_' . $key, 'open_activity_logger' );
+		wp_cache_delete( 'setting_' . $key, 'tracevault_audit_log' );
 
 		return (bool) $result;
 	}

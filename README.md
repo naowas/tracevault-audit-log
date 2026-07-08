@@ -1,15 +1,15 @@
-# Open Activity Logger
+# TraceVault Audit Log
 
-Open Activity Logger is a production-focused WordPress activity logging plugin for WordPress 5.0+ and PHP 7.4+. It records security, content, system, and optional WooCommerce events into optimized custom tables and exposes them through a native admin dashboard, AJAX tables, REST API endpoints, and CSV/JSON exports.
+TraceVault Audit Log is a production-focused WordPress activity logging plugin for WordPress 5.0+ and PHP 7.4+. It records security, content, system, and optional WooCommerce events into optimized custom tables and exposes them through a native admin dashboard, AJAX tables, REST API endpoints, and CSV/JSON exports.
 
 **Author:** Naowas Morshed Eimon  
 **Author URL:** <https://naowas.github.io>  
 **License:** GPLv2 or later  
-**Text domain:** `open-activity-logger`
+**Text domain:** `tracevault-audit-log`
 
 ## Highlights
 
-- Custom tables only: `wp_oal_logs`, `wp_oal_meta`, and `wp_oal_settings`
+- Custom tables only: `wp_tracevault_logs`, `wp_tracevault_meta`, and `wp_tracevault_settings`
 - Batched writes flushed on shutdown
 - Indexed filters for event type, severity, user, IP, object, and date
 - Multisite activation support
@@ -19,7 +19,7 @@ Open Activity Logger is a production-focused WordPress activity logging plugin f
 - REST API: `GET /logs`, `GET /logs/{id}`, `GET /stats`, `POST /export`
 - GDPR-ready retention, IP anonymization, personal data export, and erasure hooks
 - CSV and JSON filtered exports
-- Extensible hooks: `oal_log_created`, `oal_log_deleted`, `oal_allowed_events`, `oal_log_data_before_insert`
+- Extensible hooks: `tracevault_log_created`, `tracevault_log_deleted`, `tracevault_allowed_events`, `tracevault_log_data_before_insert`
 
 ## Logged Events
 
@@ -33,17 +33,17 @@ WooCommerce: order create/update/status change, product create/update, and coupo
 
 ## Installation
 
-1. Upload the `open-activity-logger` folder to `wp-content/plugins/`.
-2. Activate **Open Activity Logger** in WordPress.
-3. Visit **Activity Logger** in wp-admin.
-4. Adjust retention, privacy, and uninstall preferences in **Activity Logger > Settings**.
+1. Upload the `tracevault-audit-log` folder to `wp-content/plugins/`.
+2. Activate **TraceVault Audit Log** in WordPress.
+3. Visit **Audit Trail** in wp-admin.
+4. Adjust retention, privacy, and uninstall preferences in **Audit Trail > Settings**.
 
 ## Example Usage
 
 Create a custom log:
 
 ```php
-oal_log_event(
+tracevault_log_event(
     'custom.invoice_paid',
     array(
         'severity'    => 2,
@@ -61,7 +61,7 @@ Restrict allowed event types:
 
 ```php
 add_filter(
-    'oal_allowed_events',
+    'tracevault_allowed_events',
     function ( $events ) {
         $events[] = 'custom.invoice_paid';
         return $events;
@@ -73,7 +73,7 @@ Modify log data before storage:
 
 ```php
 add_filter(
-    'oal_log_data_before_insert',
+    'tracevault_log_data_before_insert',
     function ( $data, $event_type ) {
         if ( 'custom.invoice_paid' === $event_type ) {
             $data['severity'] = 2;
@@ -90,7 +90,7 @@ Listen for new logs:
 
 ```php
 add_action(
-    'oal_log_created',
+    'tracevault_log_created',
     function ( $log_id, $log ) {
         error_log( 'Audit log created: ' . $log_id );
     },
@@ -101,14 +101,14 @@ add_action(
 
 ## REST API
 
-Base namespace: `/wp-json/open-activity-logger/v1`
+Base namespace: `/wp-json/tracevault-audit-log/v1`
 
 - `GET /logs`: supports `page`, `per_page`, `event_type`, `severity`, `user_id`, `user_role`, `ip_address`, `date_from`, `date_to`, and `search`.
 - `GET /logs/{id}`: returns a single log entry.
 - `GET /stats`: accepts `days`.
 - `POST /export`: accepts `format` (`csv` or `json`) plus filters.
 
-Requests require an authenticated user with `manage_options`, `oal_manage_logs`, or `oal_export_logs` for export.
+Requests require an authenticated user with `manage_options`, `tracevault_manage_logs`, or `tracevault_export_logs` for export.
 
 ## Data Retention and Privacy
 

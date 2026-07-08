@@ -2,10 +2,10 @@
 /**
  * Privacy integrations.
  *
- * @package OpenActivityLogger
+ * @package TraceVaultAuditLog
  */
 
-namespace OpenActivityLogger;
+namespace TraceVaultAuditLog;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -48,8 +48,8 @@ class Privacy {
 	 * @return array
 	 */
 	public function register_exporter( $exporters ) {
-		$exporters['open-activity-logger'] = array(
-			'exporter_friendly_name' => __( 'Open Activity Logger', 'open-activity-logger' ),
+		$exporters['tracevault-audit-log'] = array(
+			'exporter_friendly_name' => __( 'TraceVault Audit Log', 'tracevault-audit-log' ),
 			'callback'               => array( $this, 'export_user_data' ),
 		);
 
@@ -63,8 +63,8 @@ class Privacy {
 	 * @return array
 	 */
 	public function register_eraser( $erasers ) {
-		$erasers['open-activity-logger'] = array(
-			'eraser_friendly_name' => __( 'Open Activity Logger', 'open-activity-logger' ),
+		$erasers['tracevault-audit-log'] = array(
+			'eraser_friendly_name' => __( 'TraceVault Audit Log', 'tracevault-audit-log' ),
 			'callback'             => array( $this, 'erase_user_data' ),
 		);
 
@@ -97,14 +97,14 @@ class Privacy {
 
 		foreach ( $result['items'] as $log ) {
 			$data[] = array(
-				'group_id'    => 'open-activity-logger',
-				'group_label' => __( 'Open Activity Logger', 'open-activity-logger' ),
-				'item_id'     => 'oal-log-' . $log['id'],
+				'group_id'    => 'tracevault-audit-log',
+				'group_label' => __( 'TraceVault Audit Log', 'tracevault-audit-log' ),
+				'item_id'     => 'tracevault-log-' . $log['id'],
 				'data'        => array(
-					array( 'name' => __( 'Event', 'open-activity-logger' ), 'value' => $log['event_type'] ),
-					array( 'name' => __( 'Message', 'open-activity-logger' ), 'value' => $log['message'] ),
-					array( 'name' => __( 'IP Address', 'open-activity-logger' ), 'value' => $log['ip_address'] ),
-					array( 'name' => __( 'Created', 'open-activity-logger' ), 'value' => $log['created_at'] ),
+					array( 'name' => __( 'Event', 'tracevault-audit-log' ), 'value' => $log['event_type'] ),
+					array( 'name' => __( 'Message', 'tracevault-audit-log' ), 'value' => $log['message'] ),
+					array( 'name' => __( 'IP Address', 'tracevault-audit-log' ), 'value' => $log['ip_address'] ),
+					array( 'name' => __( 'Created', 'tracevault-audit-log' ), 'value' => $log['created_at'] ),
 				),
 			);
 		}
@@ -135,7 +135,7 @@ class Privacy {
 		return array(
 			'items_removed'  => false,
 			'items_retained' => false,
-			'messages'       => array( __( 'Activity log personal data was anonymized.', 'open-activity-logger' ) ),
+			'messages'       => array( __( 'Activity log personal data was anonymized.', 'tracevault-audit-log' ) ),
 			'done'           => true,
 		);
 	}

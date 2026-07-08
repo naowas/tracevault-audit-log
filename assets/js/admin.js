@@ -12,11 +12,11 @@
 	}
 
 	function severityLabel(value) {
-		return (oalAdmin.i18n.severity && oalAdmin.i18n.severity[value]) || '';
+		return (tracevaultAdmin.i18n.severity && tracevaultAdmin.i18n.severity[value]) || '';
 	}
 
 	function eventLabel(eventType) {
-		var labels = oalAdmin.i18n.events || {};
+		var labels = tracevaultAdmin.i18n.events || {};
 
 		if (labels[eventType]) {
 			return labels[eventType];
@@ -66,7 +66,7 @@
 	}
 
 	function collectFilters() {
-		var form = document.querySelector('[data-oal-filters]');
+		var form = document.querySelector('[data-tracevault-filters]');
 		var filters = {};
 
 		if (!form) {
@@ -85,9 +85,9 @@
 	}
 
 	function get(action, params) {
-		var url = new URL(oalAdmin.ajaxUrl);
+		var url = new URL(tracevaultAdmin.ajaxUrl);
 		url.searchParams.set('action', action);
-		url.searchParams.set('nonce', oalAdmin.nonce);
+		url.searchParams.set('nonce', tracevaultAdmin.nonce);
 
 		Object.keys(params || {}).forEach(function (key) {
 			url.searchParams.set(key, params[key]);
@@ -104,13 +104,13 @@
 	function post(action, params) {
 		var data = new FormData();
 		data.append('action', action);
-		data.append('nonce', oalAdmin.nonce);
+		data.append('nonce', tracevaultAdmin.nonce);
 
 		Object.keys(params || {}).forEach(function (key) {
 			data.append(key, params[key]);
 		});
 
-		return fetch(oalAdmin.ajaxUrl, {
+		return fetch(tracevaultAdmin.ajaxUrl, {
 			method: 'POST',
 			credentials: 'same-origin',
 			body: data
@@ -127,7 +127,7 @@
 	}
 
 	function renderRows(items) {
-		var tbody = document.querySelector('[data-oal-table="logs"] tbody');
+		var tbody = document.querySelector('[data-tracevault-table="logs"] tbody');
 
 		if (!tbody) {
 			return;
@@ -139,7 +139,7 @@
 			var empty = document.createElement('tr');
 			var cell = document.createElement('td');
 			cell.colSpan = 6;
-			cell.textContent = oalAdmin.i18n.empty;
+			cell.textContent = tracevaultAdmin.i18n.empty;
 			empty.appendChild(cell);
 			tbody.appendChild(empty);
 			return;
@@ -153,13 +153,13 @@
 			var icon = document.createElement('span');
 			var title = document.createElement('strong');
 			var badge = document.createElement('span');
-			icon.className = 'oal-event-icon';
+			icon.className = 'tracevault-event-icon';
 			icon.setAttribute('aria-hidden', 'true');
 			icon.textContent = categoryIcon(item.event_type);
 			title.textContent = eventLabel(item.event_type);
-			badge.className = 'oal-severity oal-severity-' + item.severity;
+			badge.className = 'tracevault-severity tracevault-severity-' + item.severity;
 			badge.textContent = severityLabel(item.severity);
-			activity.className = 'oal-activity-cell';
+			activity.className = 'tracevault-activity-cell';
 			activity.appendChild(icon);
 			activity.appendChild(title);
 			activity.appendChild(badge);
@@ -170,7 +170,7 @@
 			var details = appendTextCell(row, formatDetails(item));
 			if (item.object_type && parseInt(item.object_id, 10) > 0) {
 				var object = document.createElement('span');
-				object.className = 'oal-object';
+				object.className = 'tracevault-object';
 				object.textContent = item.object_type + ' #' + item.object_id;
 				details.appendChild(document.createElement('br'));
 				details.appendChild(object);
@@ -180,8 +180,8 @@
 			var button = document.createElement('button');
 			button.type = 'button';
 			button.className = 'button button-small button-link-delete';
-			button.textContent = oalAdmin.i18n.delete;
-			button.setAttribute('data-oal-delete-id', item.id);
+			button.textContent = tracevaultAdmin.i18n.delete;
+			button.setAttribute('data-tracevault-delete-id', item.id);
 			action.appendChild(button);
 
 			tbody.appendChild(row);
@@ -189,9 +189,9 @@
 	}
 
 	function updatePager() {
-		var label = document.querySelector('[data-oal-page-label]');
-		var prev = document.querySelector('[data-oal-page="prev"]');
-		var next = document.querySelector('[data-oal-page="next"]');
+		var label = document.querySelector('[data-tracevault-page-label]');
+		var prev = document.querySelector('[data-tracevault-page="prev"]');
+		var next = document.querySelector('[data-tracevault-page="next"]');
 
 		if (label) {
 			label.textContent = state.page + ' / ' + state.totalPages;
@@ -207,13 +207,13 @@
 	}
 
 	function loadLogs() {
-		var table = document.querySelector('[data-oal-table="logs"]');
+		var table = document.querySelector('[data-tracevault-table="logs"]');
 
 		if (!table) {
 			return;
 		}
 
-		get('oal_logs', Object.assign({}, state.filters, {
+		get('tracevault_logs', Object.assign({}, state.filters, {
 			page: state.page,
 			per_page: 20
 		})).then(function (payload) {
@@ -226,14 +226,14 @@
 			updatePager();
 		}).catch(function () {
 			var tbody = table.querySelector('tbody');
-			tbody.innerHTML = '<tr><td colspan="6">' + oalAdmin.i18n.error + '</td></tr>';
+			tbody.innerHTML = '<tr><td colspan="6">' + tracevaultAdmin.i18n.error + '</td></tr>';
 		});
 	}
 
 	document.addEventListener('DOMContentLoaded', function () {
-		var form = document.querySelector('[data-oal-filters]');
-		var reset = document.querySelector('[data-oal-reset]');
-		var clear = document.querySelector('[data-oal-clear]');
+		var form = document.querySelector('[data-tracevault-filters]');
+		var reset = document.querySelector('[data-tracevault-reset]');
+		var clear = document.querySelector('[data-tracevault-clear]');
 
 		if (form) {
 			form.addEventListener('submit', function (event) {
@@ -255,27 +255,27 @@
 
 		if (clear) {
 			clear.addEventListener('click', function () {
-				if (!window.confirm(oalAdmin.i18n.confirmClear)) {
+				if (!window.confirm(tracevaultAdmin.i18n.confirmClear)) {
 					return;
 				}
 
-				post('oal_clear_logs', {}).then(loadLogs);
+				post('tracevault_clear_logs', {}).then(loadLogs);
 			});
 		}
 
 		document.addEventListener('click', function (event) {
-			var button = event.target.closest('[data-oal-delete-id]');
+			var button = event.target.closest('[data-tracevault-delete-id]');
 
-			if (!button || !window.confirm(oalAdmin.i18n.confirmDelete)) {
+			if (!button || !window.confirm(tracevaultAdmin.i18n.confirmDelete)) {
 				return;
 			}
 
-			post('oal_delete_log', {id: button.getAttribute('data-oal-delete-id')}).then(loadLogs);
+			post('tracevault_delete_log', {id: button.getAttribute('data-tracevault-delete-id')}).then(loadLogs);
 		});
 
-		Array.prototype.forEach.call(document.querySelectorAll('[data-oal-page]'), function (button) {
+		Array.prototype.forEach.call(document.querySelectorAll('[data-tracevault-page]'), function (button) {
 			button.addEventListener('click', function () {
-				if (button.getAttribute('data-oal-page') === 'prev') {
+				if (button.getAttribute('data-tracevault-page') === 'prev') {
 					state.page = Math.max(1, state.page - 1);
 				} else {
 					state.page = Math.min(state.totalPages, state.page + 1);

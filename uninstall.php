@@ -2,7 +2,7 @@
 /**
  * Uninstall cleanup.
  *
- * @package OpenActivityLogger
+ * @package TraceVaultAuditLog
  */
 
 if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
@@ -14,10 +14,10 @@ if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
  *
  * @return void
  */
-function oal_uninstall_blog() {
+function tracevault_uninstall_blog() {
 	global $wpdb;
 
-	$settings_table = esc_sql( $wpdb->prefix . 'oal_settings' );
+	$settings_table = esc_sql( $wpdb->prefix . 'tracevault_settings' );
 	// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter -- Reads plugin-owned custom table to honor uninstall preference.
 	$delete = $wpdb->get_var( $wpdb->prepare( "SELECT setting_value FROM {$settings_table} WHERE setting_key = %s", 'delete_data_on_uninstall' ) );
 
@@ -25,28 +25,28 @@ function oal_uninstall_blog() {
 		return;
 	}
 
-	foreach ( array( 'oal_meta', 'oal_logs', 'oal_settings' ) as $suffix ) {
+	foreach ( array( 'tracevault_meta', 'tracevault_logs', 'tracevault_settings' ) as $suffix ) {
 		$table = esc_sql( $wpdb->prefix . $suffix );
 		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.DirectDatabaseQuery.SchemaChange, PluginCheck.Security.DirectDB.UnescapedDBParameter -- Uninstall cleanup for plugin-owned custom tables.
 		$wpdb->query( "DROP TABLE IF EXISTS {$table}" );
 	}
 }
 
-wp_clear_scheduled_hook( 'oal_daily_cleanup' );
+wp_clear_scheduled_hook( 'tracevault_daily_cleanup' );
 
 if ( is_multisite() ) {
-	$site_ids = get_sites(
+	$tracevault_site_ids = get_sites(
 		array(
 			'fields' => 'ids',
 			'number' => 0,
 		)
 	);
 
-	foreach ( $site_ids as $site_id ) {
-		switch_to_blog( (int) $site_id );
-		oal_uninstall_blog();
+	foreach ( $tracevault_site_ids as $tracevault_site_id ) {
+		switch_to_blog( (int) $tracevault_site_id );
+		tracevault_uninstall_blog();
 		restore_current_blog();
 	}
 } else {
-	oal_uninstall_blog();
+	tracevault_uninstall_blog();
 }

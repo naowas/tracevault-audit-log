@@ -2,10 +2,10 @@
 /**
  * Logger engine.
  *
- * @package OpenActivityLogger
+ * @package TraceVaultAuditLog
  */
 
-namespace OpenActivityLogger;
+namespace TraceVaultAuditLog;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -76,7 +76,7 @@ class Logger {
 			'severity'    => isset( $args['severity'] ) ? $this->sanitize_severity( $args['severity'] ) : self::SEVERITY_INFO,
 			'user_id'     => isset( $args['user_id'] ) ? absint( $args['user_id'] ) : ( $user instanceof \WP_User ? (int) $user->ID : 0 ),
 			'username'    => isset( $args['username'] ) ? sanitize_text_field( $args['username'] ) : ( $user instanceof \WP_User ? sanitize_user( $user->user_login ) : '' ),
-			'user_role'   => isset( $args['user_role'] ) ? sanitize_key( $args['user_role'] ) : \oal_current_user_role( $user ),
+			'user_role'   => isset( $args['user_role'] ) ? sanitize_key( $args['user_role'] ) : \tracevault_current_user_role( $user ),
 			'ip_address'  => isset( $args['ip_address'] ) ? $this->sanitize_ip( $args['ip_address'] ) : $this->current_ip(),
 			'user_agent'  => isset( $args['user_agent'] ) ? sanitize_textarea_field( $args['user_agent'] ) : $this->current_user_agent(),
 			'object_type' => isset( $args['object_type'] ) ? sanitize_key( $args['object_type'] ) : '',
@@ -92,7 +92,7 @@ class Logger {
 		 * @param array  $data       Sanitized log data.
 		 * @param string $event_type Event type.
 		 */
-		$data = apply_filters( 'oal_log_data_before_insert', $data, $event_type );
+		$data = apply_filters( 'tracevault_log_data_before_insert', $data, $event_type );
 
 		if ( ! is_array( $data ) || empty( $data['event_type'] ) ) {
 			return false;
@@ -130,7 +130,7 @@ class Logger {
 	 * @return bool
 	 */
 	private function is_allowed_event( $event_type ) {
-		$allowed = apply_filters( 'oal_allowed_events', array() );
+		$allowed = apply_filters( 'tracevault_allowed_events', array() );
 
 		if ( empty( $allowed ) ) {
 			return true;
