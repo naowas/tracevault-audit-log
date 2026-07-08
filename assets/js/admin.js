@@ -4,6 +4,8 @@
 	var state = {
 		page: 1,
 		totalPages: 1,
+		logs: [],
+		activeTrigger: null,
 		filters: {}
 	};
 
@@ -50,6 +52,43 @@
 		return text(key).replace(/^_+/, '').replace(/[_-]+/g, ' ').replace(/\s+/g, ' ').trim().replace(/\b\w/g, function (letter) {
 			return letter.toUpperCase();
 		});
+	}
+
+	function hasObjectValues(value) {
+		return value && typeof value === 'object' && Object.keys(value).length > 0;
+	}
+
+	function formatMetaValue(value) {
+		if (value === null || typeof value === 'undefined') {
+			return '-';
+		}
+
+		if (typeof value === 'boolean') {
+			return value ? 'True' : 'False';
+		}
+
+		if (typeof value === 'object') {
+			return JSON.stringify(value, null, 2);
+		}
+
+		return text(value);
+	}
+
+	function appendDetail(container, label, value) {
+		if (value === null || typeof value === 'undefined' || value === '') {
+			return;
+		}
+
+		var item = document.createElement('div');
+		var term = document.createElement('span');
+		var description = document.createElement('strong');
+
+		item.className = 'tracevault-detail-item';
+		term.textContent = label;
+		description.textContent = text(value);
+		item.appendChild(term);
+		item.appendChild(description);
+		container.appendChild(item);
 	}
 
 	function formatDetails(item) {
@@ -126,6 +165,113 @@
 		return cell;
 	}
 
+	function getModal() {
+		var modal = document.querySelector('[data-tracevault-modal]');
+
+		if (modal) {
+			return modal;
+		}
+
+		modal = document.createElement('div');
+		modal.className = 'tracevault-modal';
+		modal.setAttribute('data-tracevault-modal', '');
+		modal.setAttribute('aria-hidden', 'true');
+		modal.innerHTML = '<div class="tracevault-modal-backdrop" data-tracevault-modal-close></div>' +
+			'<section class="tracevault-modal-dialog" role="dialog" aria-modal="true" aria-labelledby="tracevault-modal-title">' +
+			'<button type="button" class="tracevault-modal-close" data-tracevault-modal-close>&times;</button>' +
+			'<div class="tracevault-modal-header">' +
+			'<span class="tracevault-modal-kicker"></span>' +
+			'<h2 id="tracevault-modal-title"></h2>' +
+			'<p></p>' +
+			'</div>' +
+			'<div class="tracevault-modal-body">' +
+			'<div class="tracevault-detail-grid" data-tracevault-modal-overview></div>' +
+			'<div class="tracevault-meta-section">' +
+			'<h3></h3>' +
+			'<div class="tracevault-meta-grid" data-tracevault-modal-meta></div>' +
+			'</div>' +
+			'</div>' +
+			'</section>';
+
+		document.body.appendChild(modal);
+		modal.querySelector('.tracevault-modal-close').setAttribute('aria-label', text(tracevaultAdmin.i18n.close));
+		return modal;
+	}
+
+	function closeModal() {
+		var modal = document.querySelector('[data-tracevault-modal]');
+
+		if (!modal) {
+			return;
+		}
+
+		modal.classList.remove('is-open');
+		modal.setAttribute('aria-hidden', 'true');
+		document.body.classList.remove('tracevault-modal-open');
+
+		if (state.activeTrigger && document.body.contains(state.activeTrigger)) {
+			state.activeTrigger.focus();
+		}
+
+		state.activeTrigger = null;
+	}
+
+	function renderMetadata(container, meta) {
+		container.innerHTML = '';
+
+		if (!hasObjectValues(meta)) {
+			var empty = document.createElement('p');
+			empty.className = 'tracevault-meta-empty';
+			empty.textContent = tracevaultAdmin.i18n.noMetadata;
+			container.appendChild(empty);
+			return;
+		}
+
+		Object.keys(meta).sort().forEach(function (key) {
+			var item = document.createElement('div');
+			var label = document.createElement('span');
+			var value = document.createElement('pre');
+
+			item.className = 'tracevault-meta-item';
+			label.textContent = prettifyKey(key);
+			value.textContent = formatMetaValue(meta[key]);
+			item.appendChild(label);
+			item.appendChild(value);
+			container.appendChild(item);
+		});
+	}
+
+	function openLogModal(item) {
+		var modal = getModal();
+		var title = modal.querySelector('#tracevault-modal-title');
+		var kicker = modal.querySelector('.tracevault-modal-kicker');
+		var summary = modal.querySelector('.tracevault-modal-header p');
+		var overview = modal.querySelector('[data-tracevault-modal-overview]');
+		var metaTitle = modal.querySelector('.tracevault-meta-section h3');
+		var meta = modal.querySelector('[data-tracevault-modal-meta]');
+
+		kicker.textContent = tracevaultAdmin.i18n.logDetails + ' #' + item.id;
+		title.textContent = eventLabel(item.event_type);
+		summary.textContent = formatDetails(item);
+		metaTitle.textContent = tracevaultAdmin.i18n.metadata;
+
+		overview.innerHTML = '';
+		appendDetail(overview, 'Time', item.display_time || item.created_at);
+		appendDetail(overview, 'Severity', severityLabel(item.severity));
+		appendDetail(overview, 'User', item.username || (item.user_id ? '#' + item.user_id : 'System'));
+		appendDetail(overview, 'IP address', item.ip_address);
+		appendDetail(overview, 'Object', item.object_type && parseInt(item.object_id, 10) > 0 ? item.object_type + ' #' + item.object_id : '');
+		appendDetail(overview, 'User agent', item.user_agent);
+
+		renderMetadata(meta, item.meta || {});
+
+		state.activeTrigger = document.activeElement;
+		modal.classList.add('is-open');
+		modal.setAttribute('aria-hidden', 'false');
+		document.body.classList.add('tracevault-modal-open');
+		modal.querySelector('[data-tracevault-modal-close]').focus();
+	}
+
 	function renderRows(items) {
 		var tbody = document.querySelector('[data-tracevault-table="logs"] tbody');
 
@@ -134,6 +280,7 @@
 		}
 
 		tbody.innerHTML = '';
+		state.logs = items;
 
 		if (!items.length) {
 			var empty = document.createElement('tr');
@@ -177,12 +324,22 @@
 			}
 
 			var action = appendTextCell(row, '');
-			var button = document.createElement('button');
-			button.type = 'button';
-			button.className = 'button button-small button-link-delete';
-			button.textContent = tracevaultAdmin.i18n.delete;
-			button.setAttribute('data-tracevault-delete-id', item.id);
-			action.appendChild(button);
+			var viewButton = document.createElement('button');
+			var deleteButton = document.createElement('button');
+			action.className = 'tracevault-row-actions';
+			viewButton.type = 'button';
+			viewButton.className = 'button button-small';
+			viewButton.textContent = tracevaultAdmin.i18n.view;
+			viewButton.setAttribute('data-tracevault-view-id', item.id);
+			action.appendChild(viewButton);
+
+			if (tracevaultAdmin.canDelete) {
+				deleteButton.type = 'button';
+				deleteButton.className = 'button button-small button-link-delete';
+				deleteButton.textContent = tracevaultAdmin.i18n.delete;
+				deleteButton.setAttribute('data-tracevault-delete-id', item.id);
+				action.appendChild(deleteButton);
+			}
 
 			tbody.appendChild(row);
 		});
@@ -264,13 +421,39 @@
 		}
 
 		document.addEventListener('click', function (event) {
-			var button = event.target.closest('[data-tracevault-delete-id]');
+			var viewButton = event.target.closest('[data-tracevault-view-id]');
+			var deleteButton = event.target.closest('[data-tracevault-delete-id]');
+			var closeButton = event.target.closest('[data-tracevault-modal-close]');
 
-			if (!button || !window.confirm(tracevaultAdmin.i18n.confirmDelete)) {
+			if (viewButton) {
+				var id = parseInt(viewButton.getAttribute('data-tracevault-view-id'), 10);
+				var item = state.logs.filter(function (log) {
+					return parseInt(log.id, 10) === id;
+				})[0];
+
+				if (item) {
+					openLogModal(item);
+				}
+
 				return;
 			}
 
-			post('tracevault_delete_log', {id: button.getAttribute('data-tracevault-delete-id')}).then(loadLogs);
+			if (closeButton) {
+				closeModal();
+				return;
+			}
+
+			if (!deleteButton || !window.confirm(tracevaultAdmin.i18n.confirmDelete)) {
+				return;
+			}
+
+			post('tracevault_delete_log', {id: deleteButton.getAttribute('data-tracevault-delete-id')}).then(loadLogs);
+		});
+
+		document.addEventListener('keydown', function (event) {
+			if (event.key === 'Escape') {
+				closeModal();
+			}
 		});
 
 		Array.prototype.forEach.call(document.querySelectorAll('[data-tracevault-page]'), function (button) {

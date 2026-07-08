@@ -116,8 +116,11 @@ class Admin {
 			return;
 		}
 
-		wp_enqueue_style( 'tracevault-admin', TRACEVAULT_PLUGIN_URL . 'assets/css/admin.css', array(), TRACEVAULT_VERSION );
-		wp_enqueue_script( 'tracevault-admin', TRACEVAULT_PLUGIN_URL . 'assets/js/admin.js', array(), TRACEVAULT_VERSION, true );
+		$style_version  = TRACEVAULT_VERSION . '-' . filemtime( TRACEVAULT_PLUGIN_DIR . 'assets/css/admin.css' );
+		$script_version = TRACEVAULT_VERSION . '-' . filemtime( TRACEVAULT_PLUGIN_DIR . 'assets/js/admin.js' );
+
+		wp_enqueue_style( 'tracevault-admin', TRACEVAULT_PLUGIN_URL . 'assets/css/admin.css', array(), $style_version );
+		wp_enqueue_script( 'tracevault-admin', TRACEVAULT_PLUGIN_URL . 'assets/js/admin.js', array(), $script_version, true );
 		wp_localize_script(
 			'tracevault-admin',
 			'tracevaultAdmin',
@@ -131,6 +134,11 @@ class Admin {
 					'confirmDelete' => __( 'Delete this log entry?', 'tracevault-audit-log' ),
 					'confirmClear'  => __( 'Delete all activity logs? This cannot be undone.', 'tracevault-audit-log' ),
 					'delete'        => __( 'Delete', 'tracevault-audit-log' ),
+					'view'          => __( 'View', 'tracevault-audit-log' ),
+					'close'         => __( 'Close', 'tracevault-audit-log' ),
+					'logDetails'    => __( 'Log details', 'tracevault-audit-log' ),
+					'metadata'      => __( 'Metadata', 'tracevault-audit-log' ),
+					'noMetadata'    => __( 'No metadata was captured for this log entry.', 'tracevault-audit-log' ),
 					'events'        => $this->event_labels(),
 					'severity' => array(
 						1 => __( 'Info', 'tracevault-audit-log' ),

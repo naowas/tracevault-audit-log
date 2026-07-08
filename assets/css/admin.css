@@ -283,7 +283,13 @@
 
 .tracevault-log-table td:nth-child(6) {
 	white-space: nowrap;
-	width: 80px;
+	width: 132px;
+}
+
+.tracevault-row-actions {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 6px;
 }
 
 .tracevault-activity-cell {
@@ -356,6 +362,183 @@
 	padding: 12px 0 0;
 }
 
+body.tracevault-modal-open {
+	overflow: hidden;
+}
+
+.tracevault-modal {
+	display: none;
+	inset: 0;
+	position: fixed;
+	z-index: 100000;
+}
+
+.tracevault-modal.is-open {
+	align-items: center;
+	display: flex;
+	justify-content: center;
+	padding: 24px;
+}
+
+.tracevault-modal-backdrop {
+	background: rgba(15, 23, 42, 0.58);
+	inset: 0;
+	position: absolute;
+}
+
+.tracevault-modal-dialog {
+	background: #fff;
+	border: 1px solid #dcdcde;
+	border-radius: 8px;
+	box-shadow: 0 24px 70px rgba(15, 23, 42, 0.28);
+	color: #0f172a;
+	max-height: min(760px, calc(100vh - 48px));
+	max-width: 860px;
+	overflow: hidden;
+	position: relative;
+	width: min(860px, 100%);
+}
+
+.tracevault-modal-close {
+	align-items: center;
+	background: #fff;
+	border: 1px solid #dcdcde;
+	border-radius: 999px;
+	color: #475569;
+	cursor: pointer;
+	display: inline-flex;
+	font-size: 22px;
+	height: 34px;
+	justify-content: center;
+	line-height: 1;
+	position: absolute;
+	right: 16px;
+	top: 16px;
+	width: 34px;
+	z-index: 1;
+}
+
+.tracevault-modal-close:hover,
+.tracevault-modal-close:focus {
+	border-color: var(--tracevault-primary, #1e3a8a);
+	color: var(--tracevault-primary, #1e3a8a);
+	outline: none;
+}
+
+.tracevault-modal-header {
+	background: linear-gradient(135deg, #f8fafc 0%, #eef2ff 100%);
+	border-bottom: 1px solid #e5e7eb;
+	padding: 24px 64px 22px 24px;
+}
+
+.tracevault-modal-kicker {
+	color: #1e3a8a;
+	display: block;
+	font-size: 11px;
+	font-weight: 700;
+	letter-spacing: 0.06em;
+	margin-bottom: 8px;
+	text-transform: uppercase;
+}
+
+.tracevault-modal-header h2 {
+	color: #0f172a;
+	font-size: 22px;
+	line-height: 1.25;
+	margin: 0;
+}
+
+.tracevault-modal-header p {
+	color: #475569;
+	font-size: 14px;
+	line-height: 1.5;
+	margin: 8px 0 0;
+}
+
+.tracevault-modal-body {
+	max-height: calc(100vh - 210px);
+	overflow: auto;
+	padding: 20px 24px 24px;
+}
+
+.tracevault-detail-grid {
+	display: grid;
+	gap: 10px;
+	grid-template-columns: repeat(3, minmax(0, 1fr));
+	margin-bottom: 22px;
+}
+
+.tracevault-detail-item {
+	background: #f8fafc;
+	border: 1px solid #e5e7eb;
+	border-radius: 8px;
+	min-width: 0;
+	padding: 12px;
+}
+
+.tracevault-detail-item span,
+.tracevault-meta-item span {
+	color: #64748b;
+	display: block;
+	font-size: 11px;
+	font-weight: 700;
+	letter-spacing: 0.04em;
+	margin-bottom: 6px;
+	text-transform: uppercase;
+}
+
+.tracevault-detail-item strong {
+	color: #0f172a;
+	display: block;
+	font-size: 13px;
+	line-height: 1.4;
+	overflow-wrap: anywhere;
+}
+
+.tracevault-meta-section h3 {
+	border-bottom: 1px solid #e5e7eb;
+	color: #0f172a;
+	font-size: 15px;
+	margin: 0 0 14px;
+	padding-bottom: 10px;
+}
+
+.tracevault-meta-grid {
+	display: grid;
+	gap: 12px;
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.tracevault-meta-item {
+	background: #fff;
+	border: 1px solid #e5e7eb;
+	border-radius: 8px;
+	padding: 13px;
+}
+
+.tracevault-meta-item pre {
+	color: #0f172a;
+	font-family: Consolas, Monaco, monospace;
+	font-size: 12px;
+	line-height: 1.5;
+	margin: 0;
+	max-height: 220px;
+	overflow: auto;
+	white-space: pre-wrap;
+	word-break: break-word;
+}
+
+.tracevault-meta-empty {
+	background: #f8fafc;
+	border: 1px dashed #cbd5e1;
+	border-radius: 8px;
+	color: #64748b;
+	grid-column: 1 / -1;
+	margin: 0;
+	padding: 18px;
+	text-align: center;
+}
+
 @media (max-width: 960px) {
 	.tracevault-cards,
 	.tracevault-filters,
@@ -388,6 +571,23 @@
 
 	.tracevault-settings-footer {
 		position: static;
+	}
+
+	.tracevault-modal.is-open {
+		padding: 12px;
+	}
+
+	.tracevault-modal-header {
+		padding: 22px 58px 20px 18px;
+	}
+
+	.tracevault-modal-body {
+		padding: 18px;
+	}
+
+	.tracevault-detail-grid,
+	.tracevault-meta-grid {
+		grid-template-columns: 1fr;
 	}
 }
 
@@ -441,5 +641,42 @@
 
 	.tracevault-log-table tbody tr:hover {
 		background: #111827;
+	}
+
+	.tracevault-modal-dialog,
+	.tracevault-modal-close,
+	.tracevault-meta-item {
+		background: #1f2937;
+		border-color: #374151;
+		color: #e5e7eb;
+	}
+
+	.tracevault-modal-header {
+		background: #111827;
+		border-color: #374151;
+	}
+
+	.tracevault-modal-header h2,
+	.tracevault-detail-item strong,
+	.tracevault-meta-section h3,
+	.tracevault-meta-item pre {
+		color: #e5e7eb;
+	}
+
+	.tracevault-modal-header p,
+	.tracevault-detail-item span,
+	.tracevault-meta-item span,
+	.tracevault-meta-empty {
+		color: #cbd5e1;
+	}
+
+	.tracevault-detail-item,
+	.tracevault-meta-empty {
+		background: #111827;
+		border-color: #374151;
+	}
+
+	.tracevault-meta-section h3 {
+		border-color: #374151;
 	}
 }

@@ -50,6 +50,21 @@ msgstr ""
 msgid "Delete all activity logs? This cannot be undone."
 msgstr ""
 
+msgid "View"
+msgstr ""
+
+msgid "Close"
+msgstr ""
+
+msgid "Log details"
+msgstr ""
+
+msgid "Metadata"
+msgstr ""
+
+msgid "No metadata was captured for this log entry."
+msgstr ""
+
 msgid "Clear logs"
 msgstr ""
 
