@@ -89,8 +89,8 @@ $tracevault_settings = isset( $data['settings'] ) ? $data['settings'] : array();
 
 				<div class="tracevault-setting-row">
 					<div class="tracevault-setting-copy">
-						<label for="tracevault-capture-options"><?php esc_html_e( 'Verbose system logs', 'tracevault-audit-log' ); ?></label>
-						<p><?php esc_html_e( 'Log option and settings changes. Cache, transient, and noisy builder options are still ignored.', 'tracevault-audit-log' ); ?></p>
+						<label for="tracevault-capture-options"><?php esc_html_e( 'Verbose option logs', 'tracevault-audit-log' ); ?></label>
+						<p><?php esc_html_e( 'Also log extra plugin option changes beyond WordPress and WooCommerce settings. Cache, transient, and noisy builder options are still ignored.', 'tracevault-audit-log' ); ?></p>
 					</div>
 					<div class="tracevault-setting-control">
 						<label class="tracevault-switch">

@@ -65,6 +65,21 @@ msgstr ""
 msgid "No metadata was captured for this log entry."
 msgstr ""
 
+msgid "Setting changed"
+msgstr ""
+
+msgid "WooCommerce setting changed"
+msgstr ""
+
+msgid "TraceVault setting \"%s\" was updated."
+msgstr ""
+
+msgid "Option \"%s\" was updated."
+msgstr ""
+
+msgid "WooCommerce setting \"%s\" was updated."
+msgstr ""
+
 msgid "Clear logs"
 msgstr ""
 
@@ -74,7 +89,7 @@ msgstr ""
 msgid "Export JSON"
 msgstr ""
 
-msgid "Verbose mode: log option and settings changes"
+msgid "Verbose option logs"
 msgstr ""
 
 msgid "Keep this off unless you are debugging. It can create many system logs."
@@ -101,5 +116,5 @@ msgstr ""
 msgid "Settings changes"
 msgstr ""
 
-msgid "Keep this off unless you are debugging. Cache, transient, and noisy builder options are still ignored."
+msgid "Also log extra plugin option changes beyond WordPress and WooCommerce settings. Cache, transient, and noisy builder options are still ignored."
 msgstr ""

@@ -94,9 +94,10 @@
 	function formatDetails(item) {
 		var message = text(item.message);
 
-		if (item.event_type === 'system.option_update') {
+		if (item.event_type === 'system.setting_update' || item.event_type === 'system.option_update' || item.event_type === 'woocommerce.setting_update') {
 			var match = message.match(/Option "([^"]+)"/);
-			var option = match && match[1] ? match[1] : (item.meta && item.meta.option ? item.meta.option : '');
+			var wooMatch = message.match(/WooCommerce setting "([^"]+)"/);
+			var option = match && match[1] ? match[1] : (wooMatch && wooMatch[1] ? wooMatch[1] : (item.meta && item.meta.option ? item.meta.option : ''));
 
 			return option ? 'Setting changed: ' + prettifyKey(option) : 'Setting changed';
 		}

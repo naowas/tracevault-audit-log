@@ -110,6 +110,15 @@ class Settings {
 
 		$stored = is_scalar( $value ) ? (string) $value : wp_json_encode( $value );
 		$table  = $this->db->table( 'settings' );
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.PreparedSQL.InterpolatedNotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter -- Custom table name is generated from a closed allow-list.
+		$previous_stored = $wpdb->get_var( $wpdb->prepare( "SELECT setting_value FROM {$table} WHERE setting_key = %s", $key ) );
+		$previous        = $previous_stored;
+
+		if ( null !== $previous ) {
+			$decoded  = json_decode( $previous, true );
+			$previous = ( JSON_ERROR_NONE === json_last_error() ) ? $decoded : $previous;
+		}
+
 		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery -- Writing plugin-owned custom settings table.
 		$result = $wpdb->replace(
 			$table,
@@ -121,6 +130,17 @@ class Settings {
 		);
 
 		wp_cache_delete( 'setting_' . $key, 'tracevault_audit_log' );
+
+		if ( $result && $previous_stored !== $stored ) {
+			/**
+			 * Fires after a TraceVault setting changes.
+			 *
+			 * @param string $key       Setting key.
+			 * @param mixed  $previous  Previous setting value.
+			 * @param mixed  $value     New setting value.
+			 */
+			do_action( 'tracevault_setting_updated', $key, $previous, $value );
+		}
 
 		return (bool) $result;
 	}

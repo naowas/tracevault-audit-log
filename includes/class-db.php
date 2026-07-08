@@ -276,13 +276,17 @@ class DB {
 
 		if ( '' !== $args['category'] ) {
 			if ( 'settings' === $args['category'] ) {
-				$where[] = 'event_type = %s';
+				$where[] = '(event_type = %s OR event_type = %s OR event_type = %s)';
+				$values[] = 'system.setting_update';
 				$values[] = 'system.option_update';
+				$values[] = 'woocommerce.setting_update';
 			} elseif ( 'system' === $args['category'] ) {
 				$where[] = 'event_type LIKE %s';
 				$values[] = 'system.%';
 				$where[] = 'event_type <> %s';
 				$values[] = 'system.option_update';
+				$where[] = 'event_type <> %s';
+				$values[] = 'system.setting_update';
 			} else {
 				$where[]  = 'event_type LIKE %s';
 				$values[] = $wpdb->esc_like( sanitize_key( $args['category'] ) ) . '.%';

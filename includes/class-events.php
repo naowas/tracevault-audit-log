@@ -69,7 +69,9 @@ class Events {
 		add_action( 'deleted_plugin', array( $this, 'plugin_deleted' ), 10, 2 );
 		add_action( 'upgrader_process_complete', array( $this, 'upgrader_complete' ), 10, 2 );
 		add_action( 'switch_theme', array( $this, 'theme_switched' ), 10, 3 );
-		add_action( 'update_option', array( $this, 'option_updated' ), 10, 3 );
+		add_action( 'added_option', array( $this, 'option_added' ), 10, 2 );
+		add_action( 'updated_option', array( $this, 'option_updated' ), 10, 3 );
+		add_action( 'tracevault_setting_updated', array( $this, 'tracevault_setting_updated' ), 10, 3 );
 
 		if ( class_exists( 'WooCommerce' ) ) {
 			add_action( 'woocommerce_new_order', array( $this, 'woocommerce_order_created' ) );
@@ -559,9 +561,52 @@ class Events {
 	 * @return void
 	 */
 	public function option_updated( $option, $old_value, $value ) {
-		unset( $old_value, $value );
+		$this->log_option_change( $option, $old_value, $value, 'updated' );
+	}
 
-		if ( ! (int) $this->settings->get( 'capture_option_updates', 0 ) ) {
+	/**
+	 * Logs option additions.
+	 *
+	 * @param string $option Option key.
+	 * @param mixed  $value Option value.
+	 * @return void
+	 */
+	public function option_added( $option, $value ) {
+		$this->log_option_change( $option, null, $value, 'created' );
+	}
+
+	/**
+	 * Logs TraceVault custom-table setting updates.
+	 *
+	 * @param string $key       Setting key.
+	 * @param mixed  $old_value Old value.
+	 * @param mixed  $value     New value.
+	 * @return void
+	 */
+	public function tracevault_setting_updated( $key, $old_value, $value ) {
+		$this->log_setting_change(
+			'system.setting_update',
+			'tracevault_setting',
+			$key,
+			$old_value,
+			$value,
+			'updated',
+			/* translators: %s: setting name. */
+			sprintf( __( 'TraceVault setting "%s" was updated.', 'tracevault-audit-log' ), $key )
+		);
+	}
+
+	/**
+	 * Logs WordPress option changes when they represent settings.
+	 *
+	 * @param string $option Option key.
+	 * @param mixed  $old_value Old value.
+	 * @param mixed  $value New value.
+	 * @param string $action Change action.
+	 * @return void
+	 */
+	private function log_option_change( $option, $old_value, $value, $action ) {
+		if ( $old_value === $value ) {
 			return;
 		}
 
@@ -569,16 +614,170 @@ class Events {
 			return;
 		}
 
+		$is_woocommerce = $this->is_woocommerce_setting_option( $option );
+		$is_core_setting = $this->is_core_setting_option( $option );
+
+		if ( ! $is_woocommerce && ! $is_core_setting && ! (int) $this->settings->get( 'capture_option_updates', 0 ) ) {
+			return;
+		}
+
+		$event_type  = $is_woocommerce ? 'woocommerce.setting_update' : ( $is_core_setting ? 'system.setting_update' : 'system.option_update' );
+		$object_type = $is_woocommerce ? 'woocommerce_setting' : 'option';
+
+		/* translators: %s: option name. */
+		$message = sprintf( __( 'Option "%s" was updated.', 'tracevault-audit-log' ), $option );
+
+		if ( $is_woocommerce ) {
+			/* translators: %s: WooCommerce setting name. */
+			$message = sprintf( __( 'WooCommerce setting "%s" was updated.', 'tracevault-audit-log' ), $option );
+		}
+
+		$this->log_setting_change( $event_type, $object_type, $option, $old_value, $value, $action, $message );
+	}
+
+	/**
+	 * Stores a setting-change audit log.
+	 *
+	 * @param string $event_type Event type.
+	 * @param string $object_type Object type.
+	 * @param string $option Option or setting key.
+	 * @param mixed  $old_value Old value.
+	 * @param mixed  $value New value.
+	 * @param string $action Change action.
+	 * @param string $message Log message.
+	 * @return void
+	 */
+	private function log_setting_change( $event_type, $object_type, $option, $old_value, $value, $action, $message ) {
 		$this->logger->log(
-			'system.option_update',
+			$event_type,
 			array(
-					'object_type' => 'option',
-					'severity'    => Logger::SEVERITY_NOTICE,
-					/* translators: %s: option name. */
-					'message'     => sprintf( __( 'Option "%s" was updated.', 'tracevault-audit-log' ), $option ),
-				'meta'        => array( 'option' => sanitize_key( $option ) ),
+				'object_type' => $object_type,
+				'severity'    => Logger::SEVERITY_NOTICE,
+				'message'     => $message,
+				'meta'        => array(
+					'option'    => sanitize_key( $option ),
+					'action'    => sanitize_key( $action ),
+					'old_value' => $this->setting_value_for_log( $option, $old_value ),
+					'new_value' => $this->setting_value_for_log( $option, $value ),
+				),
 			)
 		);
+	}
+
+	/**
+	 * Reduces and redacts setting values before storing them in metadata.
+	 *
+	 * @param string $key Setting key.
+	 * @param mixed  $value Setting value.
+	 * @param int    $depth Current recursion depth.
+	 * @return mixed
+	 */
+	private function setting_value_for_log( $key, $value, $depth = 0 ) {
+		if ( $this->is_sensitive_setting_key( $key ) ) {
+			return '[redacted]';
+		}
+
+		if ( is_bool( $value ) || is_int( $value ) || is_float( $value ) || null === $value ) {
+			return $value;
+		}
+
+		if ( is_scalar( $value ) ) {
+			$value = (string) $value;
+			return strlen( $value ) > 250 ? substr( $value, 0, 250 ) . '...' : $value;
+		}
+
+		if ( is_array( $value ) ) {
+			if ( $depth >= 2 ) {
+				return '[array]';
+			}
+
+			$clean = array();
+			$count = 0;
+			foreach ( $value as $nested_key => $nested_value ) {
+				$count++;
+
+				if ( $count > 20 ) {
+					$clean['truncated'] = true;
+					break;
+				}
+
+				$clean[ sanitize_key( (string) $nested_key ) ] = $this->setting_value_for_log( (string) $nested_key, $nested_value, $depth + 1 );
+			}
+
+			return $clean;
+		}
+
+		return '[' . gettype( $value ) . ']';
+	}
+
+	/**
+	 * Checks whether a key likely contains sensitive data.
+	 *
+	 * @param string $key Setting key.
+	 * @return bool
+	 */
+	private function is_sensitive_setting_key( $key ) {
+		$key = strtolower( (string) $key );
+
+		$patterns = array( 'api_key', 'apikey', 'secret', 'token', 'password', 'passwd', 'private', 'consumer_key', 'consumer_secret', 'client_secret', 'webhook_secret', 'license_key', 'salt' );
+
+		foreach ( $patterns as $pattern ) {
+			if ( false !== strpos( $key, $pattern ) ) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	/**
+	 * Checks whether an option is a core WordPress setting.
+	 *
+	 * @param string $option Option key.
+	 * @return bool
+	 */
+	private function is_core_setting_option( $option ) {
+		$core_options = array(
+			'admin_email',
+			'blog_public',
+			'blogdescription',
+			'blogname',
+			'comments_notify',
+			'comment_moderation',
+			'date_format',
+			'default_comment_status',
+			'default_ping_status',
+			'default_role',
+			'gmt_offset',
+			'home',
+			'mailserver_url',
+			'moderation_notify',
+			'page_for_posts',
+			'page_on_front',
+			'permalink_structure',
+			'posts_per_page',
+			'require_name_email',
+			'show_on_front',
+			'siteurl',
+			'start_of_week',
+			'time_format',
+			'timezone_string',
+			'users_can_register',
+		);
+
+		return in_array( (string) $option, $core_options, true );
+	}
+
+	/**
+	 * Checks whether an option belongs to WooCommerce settings.
+	 *
+	 * @param string $option Option key.
+	 * @return bool
+	 */
+	private function is_woocommerce_setting_option( $option ) {
+		$option = (string) $option;
+
+		return 0 === strpos( $option, 'woocommerce_' ) || 0 === strpos( $option, 'wc_' );
 	}
 
 	/**
