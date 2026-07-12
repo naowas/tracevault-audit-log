@@ -35,8 +35,8 @@ WooCommerce: order create/update/status change, product create/update, and coupo
 
 1. Upload the `tracevault-audit-log` folder to `wp-content/plugins/`.
 2. Activate **TraceVault Audit Log** in WordPress.
-3. Visit **Audit Trail** in wp-admin.
-4. Adjust retention, privacy, and uninstall preferences in **Audit Trail > Settings**.
+3. Visit **Activity Logs** in wp-admin.
+4. Adjust retention, privacy, and uninstall preferences in **Activity Logs > Settings**.
 
 ## Example Usage
 

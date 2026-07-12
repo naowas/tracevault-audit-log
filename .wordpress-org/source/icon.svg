@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-label="TraceVault Audit Log icon">
+  <defs>
+    <linearGradient id="bg" x1="28" y1="18" x2="222" y2="238" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#0f172a"/>
+      <stop offset="1" stop-color="#07111f"/>
+    </linearGradient>
+    <linearGradient id="teal" x1="54" y1="38" x2="197" y2="211" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#6ee7df"/>
+      <stop offset=".56" stop-color="#14b8a6"/>
+      <stop offset="1" stop-color="#0f766e"/>
+    </linearGradient>
+    <linearGradient id="steel" x1="80" y1="76" x2="179" y2="179" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#e5e7eb"/>
+      <stop offset=".55" stop-color="#94a3b8"/>
+      <stop offset="1" stop-color="#334155"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="150%">
+      <feDropShadow dx="0" dy="12" stdDeviation="12" flood-color="#000814" flood-opacity=".45"/>
+    </filter>
+  </defs>
+  <rect width="256" height="256" rx="46" fill="url(#bg)"/>
+  <g opacity=".4" stroke="#2dd4bf" stroke-width="2" stroke-linecap="round">
+    <path d="M28 75h42"/>
+    <path d="M28 104h52"/>
+    <path d="M28 133h34"/>
+    <path d="M28 162h46"/>
+    <path d="M28 191h58"/>
+  </g>
+  <g filter="url(#shadow)">
+    <path d="M132 28c28 23 58 32 88 36v55c0 50-28 87-88 110-60-23-88-60-88-110V64c30-4 60-13 88-36z" fill="#0f172a" stroke="url(#teal)" stroke-width="14" stroke-linejoin="round"/>
+    <circle cx="132" cy="124" r="49" fill="url(#steel)" stroke="#e2e8f0" stroke-width="4"/>
+    <circle cx="132" cy="124" r="30" fill="#0f172a" stroke="#cbd5e1" stroke-width="5"/>
+    <circle cx="132" cy="124" r="9" fill="#f8fafc"/>
+    <g stroke="#e5e7eb" stroke-width="7" stroke-linecap="round">
+      <path d="M132 83v28"/>
+      <path d="M132 137v28"/>
+      <path d="M91 124h28"/>
+      <path d="M145 124h28"/>
+      <path d="M103 95l20 20"/>
+      <path d="M161 95l-20 20"/>
+      <path d="M103 153l20-20"/>
+      <path d="M161 153l-20-20"/>
+    </g>
+  </g>
+  <g fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M40 102h58l20 22h28" stroke="#14b8a6" stroke-width="8"/>
+    <path d="M40 155h58l20-22h28" stroke="#14b8a6" stroke-width="8"/>
+    <circle cx="40" cy="102" r="10" fill="#14b8a6"/>
+    <circle cx="40" cy="155" r="10" fill="#14b8a6"/>
+    <circle cx="174" cy="133" r="10" fill="#f59e0b"/>
+    <path d="M70 95l10 10 21-24" stroke="#ccfbf1" stroke-width="8"/>
+    <path d="M70 148l10 10 21-24" stroke="#ccfbf1" stroke-width="8"/>
+  </g>
+</svg>

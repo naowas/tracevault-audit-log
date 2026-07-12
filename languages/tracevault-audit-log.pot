@@ -14,12 +14,6 @@ msgstr ""
 msgid "TraceVault Audit Log"
 msgstr ""
 
-msgid "Track every action. Stay in control."
-msgstr ""
-
-msgid "Audit Trail"
-msgstr ""
-
 msgid "Settings"
 msgstr ""
 
